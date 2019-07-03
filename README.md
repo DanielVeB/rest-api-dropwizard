@@ -1,0 +1,1 @@
+exercise to learn rest api with dropwizard and mongoDB
