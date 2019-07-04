@@ -30,9 +30,11 @@ public class ClientsService{
     @Path("/get/name={name}")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Client> getClientByName(@PathParam("name") String name){
-        System.out.println("szukam");
         return mongoClientDAO.getByName(name);
     }
+
+
+
 
     @GET
     @Timed
@@ -42,6 +44,15 @@ public class ClientsService{
         return mongoClientDAO.getAll();
     }
 
+
+    @GET
+    @Timed
+    @Path("/query")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Client> getClientsIdkn(){
+
+        return null;
+    }
 
     @POST
     @Timed
