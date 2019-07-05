@@ -1,6 +1,6 @@
-package com.comarch.danielkurosz.jdbi;
+package com.comarch.danielkurosz.dao;
 
-import com.comarch.danielkurosz.data.Client;
+import com.comarch.danielkurosz.data.ClientEntity;
 
 import java.util.LinkedList;
 
@@ -11,22 +11,22 @@ import java.util.LinkedList;
  * read method was split into 3 methods: getByName, getByEmail and getAll
  *
  * @author daniel kurosz
- * @see Client
+ * @see ClientEntity
  * @see LinkedList
  */
 
 public interface ClientDAO {
 
-    void create(Client client);
+    void create(ClientEntity clientEntity);
 
-    void update(Client client);
+    void update(ClientEntity clientEntity);
 
-    void delete(Client client);
+    void delete(ClientEntity clientEntity);
 
-    LinkedList<Client> getByName(String name);
+    LinkedList<ClientEntity> getByName(String name);
 
-    Client getByEmail(String email);
+    ClientEntity getByEmail(String email);
 
-    LinkedList<Client> getAll();
+    LinkedList<ClientEntity> getAll();
 
 }
