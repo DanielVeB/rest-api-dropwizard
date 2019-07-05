@@ -11,11 +11,11 @@ import java.util.Date;
 @Entity("clients")
 public class ClientEntity {
 
-    private String email;
     @Id
     @Property("id")
     private ObjectId id;
 
+    private String email;
     private String firstName;
     private String lastName;
     private Date creationDate;

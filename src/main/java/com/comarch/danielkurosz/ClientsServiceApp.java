@@ -1,7 +1,7 @@
 package com.comarch.danielkurosz;
 
 import com.comarch.danielkurosz.health.RestCheck;
-import com.comarch.danielkurosz.resources.ClientsService;
+import com.comarch.danielkurosz.resources.ClientsResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 
@@ -13,9 +13,9 @@ public class ClientsServiceApp extends Application<ClientServiceConfiguration> {
 
     @Override
     public void run(ClientServiceConfiguration configuration, Environment environment) throws Exception {
-        final ClientsService clientsService = new ClientsService();
-        environment.jersey().register(clientsService);
+        final ClientsResource clientsResource = new ClientsResource();
+        environment.jersey().register(clientsResource);
 
-        environment.healthChecks().register("template",new RestCheck(configuration.getVersion()));
+        environment.healthChecks().register("template", new RestCheck(configuration.getVersion()));
     }
 }
