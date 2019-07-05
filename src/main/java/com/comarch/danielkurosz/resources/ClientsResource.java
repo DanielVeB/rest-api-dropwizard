@@ -13,7 +13,7 @@ import java.util.List;
 @Path("/clients")
 public class ClientsResource {
 
-
+    // ClientService - connect REST API with DAO
     private ClientsService clientsService;
 
     public ClientsResource() {
@@ -25,7 +25,7 @@ public class ClientsResource {
     @Path("/get?email={email}")
     @Produces(MediaType.APPLICATION_JSON)
     public ClientDTO getClientByEmail(@PathParam("email") String email) {
-        return clientsService.getClientByEmail();
+        return clientsService.getClientByEmail(email);
     }
 
     @GET
@@ -33,7 +33,7 @@ public class ClientsResource {
     @Path("/get?name={name}")
     @Produces(MediaType.APPLICATION_JSON)
     public List<ClientDTO> getClientByName(@PathParam("name") String name) {
-        return clientsService.getClientsByName();
+        return clientsService.getClientsByName(name);
     }
 
     @GET
@@ -49,11 +49,7 @@ public class ClientsResource {
     @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
     public void add(ClientDTO clientDTO){
-        System.out.println(clientDTO.getCreationDate());
         clientsService.createClient(clientDTO);
-
     }
-
-
 
 }

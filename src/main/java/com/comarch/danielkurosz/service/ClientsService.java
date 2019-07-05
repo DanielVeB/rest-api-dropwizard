@@ -6,6 +6,7 @@ import com.comarch.danielkurosz.dto.ClientDTO;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ClientsService {
@@ -24,17 +25,24 @@ public class ClientsService {
 
        //map to ClientDTO list
        return clientEntities.stream()
-               .filter(clientEntity -> clientEntity != null)
+               .filter(Objects::nonNull)
                .map(clientEntity -> clientMapper.mapToClientDTO(clientEntity))
                .collect(Collectors.toList());
    }
 
-   public ClientDTO getClientByEmail(){
-       return null;
+   public ClientDTO getClientByEmail(String email){
+       ClientEntity clientEntity = mongoClientDAO.getByEmail(email);
+       return clientMapper.mapToClientDTO(clientEntity);
+
    }
 
-   public List<ClientDTO> getClientsByName(){
-       return null;
+   public List<ClientDTO> getClientsByName(String name){
+       List<ClientEntity> clientEntities = mongoClientDAO.getByName(name);
+
+       return clientEntities.stream()
+               .filter(Objects::nonNull)
+               .map(clientEntity -> clientMapper.mapToClientDTO(clientEntity))
+               .collect(Collectors.toList());
    }
 
    public boolean createClient(ClientDTO clientDTO){

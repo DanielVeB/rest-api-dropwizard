@@ -6,7 +6,7 @@ import java.util.LinkedList;
 
 /**
  * This interface contains basic methods that operate on database
- * This class implements all the functionality required for fetching, updating, and removing Clients objects.
+ * This class implements all the functionality required for fetching, updating, and removing ClientEntities objects.
  * CRUD - create, read, update and delete
  * read method was split into 3 methods: getByName, getByEmail and getAll
  *
