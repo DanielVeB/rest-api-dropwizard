@@ -6,16 +6,17 @@ import com.comarch.danielkurosz.dto.ClientDTO;
 public class ClientMapper {
 
     public ClientDTO mapToClientDTO(ClientEntity clientEntity){
-        return new ClientDTO(clientEntity.getFirstName(),
+        return new ClientDTO(clientEntity.getEmail(),
+                             clientEntity.getFirstName(),
                              clientEntity.getLastName(),
-                             clientEntity.getEmail(),
                              clientEntity.getCreationDate());
     }
 
     public ClientEntity mapToClientEntity(ClientDTO clientDTO){
-        // TO DO!!!
-        return null;
+        return new ClientEntity(clientDTO.getEmail(),
+                                clientDTO.getFirstName(),
+                                clientDTO.getLastName(),
+                                clientDTO.getCreationDate());
     }
-    
 
 }

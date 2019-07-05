@@ -11,11 +11,12 @@ import java.util.stream.Collectors;
 public class ClientsService {
 
     MongoClientDAO mongoClientDAO;
-
+    ClientMapper clientMapper;
 
 
    public ClientsService(){
        mongoClientDAO = new MongoClientDAO();
+       clientMapper = new ClientMapper();
    }
 
    public List<ClientDTO> getAllClients(){
@@ -24,13 +25,8 @@ public class ClientsService {
        //map to ClientDTO list
        return clientEntities.stream()
                .filter(clientEntity -> clientEntity != null)
-               .map(clientEntity -> doSomething(clientEntity))
+               .map(clientEntity -> clientMapper.mapToClientDTO(clientEntity))
                .collect(Collectors.toList());
-
-   }
-
-   private ClientDTO doSomething(ClientEntity c){
-       return new ClientDTO(c.getFirstName(),c.getLastName(),c.getEmail(),new Date());
    }
 
    public ClientDTO getClientByEmail(){
@@ -42,7 +38,12 @@ public class ClientsService {
    }
 
    public boolean createClient(ClientDTO clientDTO){
-       return true;
+       clientDTO.setCreationDate(new Date());
+       ClientEntity clientEntity = clientMapper.mapToClientEntity(clientDTO);
+       //TO DO!!!
+       // check correctness of email
+       return mongoClientDAO.create(clientEntity);
+
    }
 
    public boolean updateClient(ClientDTO clientDTO){
