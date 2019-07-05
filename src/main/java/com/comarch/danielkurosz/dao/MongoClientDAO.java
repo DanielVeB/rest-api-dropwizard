@@ -12,9 +12,7 @@ public class MongoClientDAO implements ClientDAO {
 
     final Morphia morphia = new Morphia();
 
-
     public MongoClientDAO() {
-        
 
         clientsEntities = new LinkedList<>();
         clientsEntities.push(new ClientEntity("daniel@", "Daniel", "Kurosz",new Date()));
@@ -23,10 +21,10 @@ public class MongoClientDAO implements ClientDAO {
         clientsEntities.push(new ClientEntity("jan@", "Jan", "Kowal",new Date()));
     }
 
-
     @Override
-    public void create(ClientEntity clientEntity) {
+    public boolean create(ClientEntity clientEntity) {
         clientsEntities.push(clientEntity);
+        return true;
     }
 
     @Override

@@ -17,7 +17,7 @@ import java.util.LinkedList;
 
 public interface ClientDAO {
 
-    void create(ClientEntity clientEntity);
+    boolean create(ClientEntity clientEntity);
 
     void update(ClientEntity clientEntity);
 
