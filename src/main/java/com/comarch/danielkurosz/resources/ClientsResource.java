@@ -3,6 +3,8 @@ package com.comarch.danielkurosz.resources;
 import com.codahale.metrics.annotation.Timed;
 import com.comarch.danielkurosz.dto.ClientDTO;
 import com.comarch.danielkurosz.service.ClientsService;
+import com.comarch.danielkurosz.service.InvalidEmailError;
+import com.mongodb.DuplicateKeyException;
 
 
 import javax.ws.rs.*;
@@ -16,8 +18,8 @@ public class ClientsResource {
     // ClientService - connect REST API with DAO
     private ClientsService clientsService;
 
-    public ClientsResource() {
-        clientsService = new ClientsService();
+    public ClientsResource(ClientsService clientsService) {
+        this.clientsService = clientsService;
     }
 
     @GET
@@ -38,18 +40,40 @@ public class ClientsResource {
 
     @GET
     @Timed
-    @Path("/get/all")
+    @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
     public List<ClientDTO> getAll() {
         return clientsService.getAllClients();
     }
 
+    @GET
+    @Timed
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ClientDTO> getClients(@QueryParam("firstName")String firstName,
+                                      @QueryParam("lastName")String lastName,
+                                      @QueryParam("email") String email,
+                                      @QueryParam("sortBy")List<String>orderBy){
+        System.out.println(firstName+"  "+lastName+"    "+orderBy);
+
+        return null;
+    }
+
     @POST
     @Timed
-    @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void add(ClientDTO clientDTO){
-        clientsService.createClient(clientDTO);
+    @Produces(MediaType.TEXT_PLAIN)
+    public String add(ClientDTO clientDTO){
+        try {
+            clientsService.createClient(clientDTO);
+            return "Client added successfully";
+        } catch (InvalidEmailError invalidEmailError) {
+            return "Invalid email. Please add correct email";
+        } catch (IllegalArgumentException ex){
+            return "Please fill all fields";
+        } catch (DuplicateKeyException ex){
+            return "This email already exists";
+        }
+
     }
 
 }

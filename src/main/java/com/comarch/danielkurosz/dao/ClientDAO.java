@@ -3,6 +3,7 @@ package com.comarch.danielkurosz.dao;
 import com.comarch.danielkurosz.data.ClientEntity;
 
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This interface contains basic methods that operate on database
@@ -27,6 +28,6 @@ public interface ClientDAO {
 
     ClientEntity getByEmail(String email);
 
-    LinkedList<ClientEntity> getAll();
+    List<ClientEntity> getAll();
 
 }

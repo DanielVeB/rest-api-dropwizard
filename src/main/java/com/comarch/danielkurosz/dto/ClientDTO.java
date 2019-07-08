@@ -2,25 +2,29 @@ package com.comarch.danielkurosz.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 
 public class ClientDTO {
 
+
     private String firstName;
     private String lastName;
     private String email;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm a z")
-    private Date creationDate;
+    private String creationDate;
 
     public ClientDTO(){}
 
-    public ClientDTO(String email, String firstName, String lastName, Date creationDate) {
+    public ClientDTO(String email, String firstName, String lastName, String creationDate) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.creationDate = creationDate;
     }
+
     public ClientDTO(String email, String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -51,11 +55,15 @@ public class ClientDTO {
         this.email = email;
     }
 
-    public Date getCreationDate() {
+    public String getCreationDate() {
         return creationDate;
     }
 
     public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
+//        ISO 8601 date format: 2019-07-08T08:57:08+00:00
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        this.creationDate = dateFormat.format(creationDate);
+
+
     }
 }
