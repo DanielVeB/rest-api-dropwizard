@@ -6,14 +6,17 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity("clients")
 public class ClientEntity {
 
     @Id
-    @Property("id")
-    private ObjectId id;
+    private UUID id;
 
     private String email;
     private String firstName;
@@ -21,25 +24,32 @@ public class ClientEntity {
     private Date creationDate;
 
 
-    public ClientEntity(String email, String firstName, String lastName, Date creationDate) {
+    public ClientEntity(String email, String firstName, String lastName, String creationDate) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.creationDate = creationDate;
+        try {
+            this.creationDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(creationDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public ClientEntity(String email, String firstName, String lastName){
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.creationDate = new Date();
     }
 
-    public ObjectId getId() {
+
+    public ClientEntity(){}
+
+    public UUID getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -67,8 +77,10 @@ public class ClientEntity {
         this.lastName = lastName;
     }
 
-    public Date getCreationDate() {
-        return creationDate;
+    public String getCreationDate(){
+        if (this.creationDate== null) return null;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        return dateFormat.format(this.creationDate);
     }
 
     public void setCreationDate(Date creationDate) {
