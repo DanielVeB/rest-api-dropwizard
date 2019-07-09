@@ -22,8 +22,8 @@ public class ClientsService {
        this.clientMapper = clientMapper;
    }
 
-   public List<ClientDTO> getAllClients(){
-       List<ClientEntity> clientEntities = mongoClientDAO.getAll();
+   public List<ClientDTO> getAllClients(int limit, int offset){
+       List<ClientEntity> clientEntities = mongoClientDAO.getAll(limit, offset);
 
        //map to ClientDTO list
        return clientEntities.stream()
@@ -47,6 +47,7 @@ public class ClientsService {
                .map(clientEntity -> clientMapper.mapToClientDTO(clientEntity))
                .collect(Collectors.toList());
    }
+
 
    public boolean createClient(ClientDTO clientDTO)throws InvalidEmailError,IllegalArgumentException, DuplicateKeyException {
        clientDTO.setCreationDate(new Date());

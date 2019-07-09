@@ -27,6 +27,7 @@ public class ClientsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public ClientDTO getClientByEmail(@PathParam("email") String email) {
         return clientsService.getClientByEmail(email);
+
     }
 
     @GET
@@ -41,8 +42,11 @@ public class ClientsResource {
     @Timed
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ClientDTO> getAll() {
-        return clientsService.getAllClients();
+    public List<ClientDTO> getAll(@QueryParam("limit") int limit,
+                                  @QueryParam("offset")int offset) {
+
+
+        return clientsService.getAllClients(limit, offset);
     }
 
     @GET
