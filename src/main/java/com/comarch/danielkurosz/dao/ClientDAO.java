@@ -28,6 +28,6 @@ public interface ClientDAO {
 
     ClientEntity getByEmail(String email);
 
-    List<ClientEntity> getAll();
+    List<ClientEntity> getAll(int limit, int offset);
 
 }
