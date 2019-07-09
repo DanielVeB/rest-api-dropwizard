@@ -2,6 +2,7 @@ package com.comarch.danielkurosz.dao;
 
 import com.comarch.danielkurosz.data.ClientEntity;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,14 +21,10 @@ public interface ClientDAO {
 
     boolean create(ClientEntity clientEntity);
 
-    void update(ClientEntity clientEntity);
+    ClientEntity update(ClientEntity clientEntity);
 
     void delete(ClientEntity clientEntity);
 
-    LinkedList<ClientEntity> getByName(String name);
-
-    ClientEntity getByEmail(String email);
-
-    List<ClientEntity> getAll(int limit, int offset);
+    List<ClientEntity> get(ClientEntity clientEntity, HashMap<String,String> sorts, int limit, int offset);
 
 }
