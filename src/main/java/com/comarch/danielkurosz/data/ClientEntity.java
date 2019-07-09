@@ -29,7 +29,8 @@ public class ClientEntity {
         this.firstName = firstName;
         this.lastName = lastName;
         try {
-            this.creationDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(creationDate);
+            if(creationDate!=null) this.creationDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(creationDate);
+            else this.creationDate =null;
         } catch (ParseException e) {
             e.printStackTrace();
         }

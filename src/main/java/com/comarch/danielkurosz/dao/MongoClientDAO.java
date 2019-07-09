@@ -3,11 +3,15 @@ package com.comarch.danielkurosz.dao;
 import com.comarch.danielkurosz.data.ClientEntity;
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoClient;
+import com.mongodb.QueryBuilder;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
-import org.mongodb.morphia.query.FindOptions;
+import org.mongodb.morphia.query.*;
+
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class MongoClientDAO implements ClientDAO {
 
@@ -27,8 +31,15 @@ public class MongoClientDAO implements ClientDAO {
     }
 
     @Override
-    public void update(ClientEntity clientEntity) {
+    public ClientEntity update(ClientEntity clientEntity) {
 
+        Query<ClientEntity> query = datastore.createQuery(ClientEntity.class).field("_id").equal(clientEntity.getId());
+        UpdateOperations<ClientEntity> operation = datastore.createUpdateOperations(ClientEntity.class).
+                set("firstName",clientEntity.getFirstName()).set("lastName",clientEntity.getLastName()).set("email",clientEntity.getEmail());
+
+        datastore.update(query,operation);
+
+        return datastore.get(ClientEntity.class, clientEntity.getId());
     }
 
     @Override
@@ -37,34 +48,39 @@ public class MongoClientDAO implements ClientDAO {
     }
 
     @Override
-    public LinkedList<ClientEntity> getByName(String name) {
-        return null;
-    }
+    public List<ClientEntity>get(ClientEntity clientEntity, HashMap<String, String > sorts, int limit, int offset){
+        Query<ClientEntity> query = this.datastore.createQuery(ClientEntity.class);
 
-    @Override
-    public ClientEntity getByEmail(String email) {
+        if(clientEntity.getFirstName()!=null)query.field("firstName").equal(clientEntity.getFirstName());
+        if(clientEntity.getLastName()!=null)query.field("lastName").equal(clientEntity.getLastName());
+        if(clientEntity.getEmail()!=null)query.field("email").equal(clientEntity.getEmail());
 
-        return null;
-    }
-
-    @Override
-    public List<ClientEntity> getAll(int limit, int offset) {
-
-        List<ClientEntity> clientEntities= new LinkedList<>();
-
-        try {
-            //TO DO!!!
-            //find better way
-            // limit(int limit) and offset(int offset) is deprecated
-            //clientEntities = this.datastore.find(ClientEntity.class).limit(limit).offset(offset).asList();
-
-            //it's better
-            clientEntities = this.datastore.createQuery(ClientEntity.class).asList(new FindOptions().limit(limit).skip(offset));
-
-        }catch (Exception ex){
-            System.out.println(ex.getMessage());
+        if(sorts != null){
+            Sort [] mongosorts = new Sort[sorts.size()];
+            int i =0;
+            for(Map.Entry<String, String> sort : sorts.entrySet()){
+                if(sort.getValue().equals("asc"))mongosorts[i]=Sort.ascending(sort.getKey());
+                if(sort.getValue().equals("desc"))mongosorts[i]=Sort.descending(sort.getKey());
+                i++;
+            }
+            query.order(mongosorts);
         }
-
-        return clientEntities;
+        return query.asList(new FindOptions().limit(limit).skip(offset));
     }
+
+//    @Override
+//    public List<ClientEntity> getAll(int limit, int offset) {
+//
+//        List<ClientEntity> clientEntities= new LinkedList<>();
+//
+//        try {
+//
+//            clientEntities = this.datastore.createQuery(ClientEntity.class).asList(new FindOptions().limit(limit).skip(offset));
+//
+//        }catch (Exception ex){
+//            System.out.println(ex.getMessage());
+//        }
+//
+//        return clientEntities;
+//    }
 }

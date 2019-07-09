@@ -5,10 +5,7 @@ import com.comarch.danielkurosz.data.ClientEntity;
 import com.comarch.danielkurosz.dto.ClientDTO;
 import com.mongodb.DuplicateKeyException;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClientsService {
@@ -22,31 +19,18 @@ public class ClientsService {
        this.clientMapper = clientMapper;
    }
 
-   public List<ClientDTO> getAllClients(int limit, int offset){
-       List<ClientEntity> clientEntities = mongoClientDAO.getAll(limit, offset);
+    public List<ClientDTO> getClients(ClientDTO clientDTO, String sortBy, int limit, int offset){
 
-       //map to ClientDTO list
+       HashMap<String,String>sorts = SortingConverter.getSorts(sortBy);
+
+       ClientEntity clientEntity_ = clientMapper.mapToClientEntity(clientDTO);
+
+       List<ClientEntity> clientEntities = mongoClientDAO.get(clientEntity_,sorts,limit,offset);
        return clientEntities.stream()
-               .filter(Objects::nonNull)
-               .map(clientEntity -> clientMapper.mapToClientDTO(clientEntity))
-               .collect(Collectors.toList());
-   }
-
-   public ClientDTO getClientByEmail(String email){
-       ClientEntity clientEntity = mongoClientDAO.getByEmail(email);
-       return clientMapper.mapToClientDTO(clientEntity);
-
-   }
-
-
-   public List<ClientDTO> getClientsByName(String name){
-       List<ClientEntity> clientEntities = mongoClientDAO.getByName(name);
-
-       return clientEntities.stream()
-               .filter(Objects::nonNull)
-               .map(clientEntity -> clientMapper.mapToClientDTO(clientEntity))
-               .collect(Collectors.toList());
-   }
+                .filter(Objects::nonNull)
+                .map(clientEntity -> clientMapper.mapToClientDTO(clientEntity))
+                .collect(Collectors.toList());
+    }
 
 
    public boolean createClient(ClientDTO clientDTO)throws InvalidEmailError,IllegalArgumentException, DuplicateKeyException {
@@ -75,8 +59,13 @@ public class ClientsService {
 
    }
 
-   public boolean updateClient(ClientDTO clientDTO){
-        return true;
+   public ClientDTO updateClient(ClientDTO clientDTO,String uuid){
+        ClientEntity clientEntity = clientMapper.mapToClientEntity(clientDTO);
+        UUID id = UUID.fromString(uuid);
+        clientEntity.setId(id);
+        ClientEntity returnClientEntity= mongoClientDAO.update(clientEntity);
+        System.out.println(clientEntity.getId());
+        return clientMapper.mapToClientDTO(returnClientEntity);
    }
 
    public boolean deleteClient(ClientDTO clientDTO){

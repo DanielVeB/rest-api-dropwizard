@@ -21,33 +21,6 @@ public class ClientsResource {
         this.clientsService = clientsService;
     }
 
-    @GET
-    @Timed
-    @Path("/get?email={email}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public ClientDTO getClientByEmail(@PathParam("email") String email) {
-        return clientsService.getClientByEmail(email);
-
-    }
-
-    @GET
-    @Timed
-    @Path("/get?name={name}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<ClientDTO> getClientByName(@PathParam("name") String name) {
-        return clientsService.getClientsByName(name);
-    }
-
-    @GET
-    @Timed
-    @Path("/all")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<ClientDTO> getAll(@QueryParam("limit") int limit,
-                                  @QueryParam("offset")int offset) {
-
-
-        return clientsService.getAllClients(limit, offset);
-    }
 
     @GET
     @Timed
@@ -55,10 +28,16 @@ public class ClientsResource {
     public List<ClientDTO> getClients(@QueryParam("firstName")String firstName,
                                       @QueryParam("lastName")String lastName,
                                       @QueryParam("email") String email,
-                                      @QueryParam("sortBy")List<String>orderBy){
-        System.out.println(firstName+"  "+lastName+"    "+orderBy);
+                                      @QueryParam("sortBy")String sortBy,
+                                      @QueryParam("limit") int limit,
+                                      @QueryParam("offset")int offset){
 
-        return null;
+        ClientDTO clientDTO = new ClientDTO.ClientDTOBuilder().firstName(firstName).
+                                                                lastName(lastName).
+                                                                email(email).build();
+        // example
+        //sortBy=name:desc,email:asc
+        return clientsService.getClients(clientDTO,sortBy,limit,offset);
     }
 
     @POST
@@ -76,7 +55,15 @@ public class ClientsResource {
         } catch (DuplicateKeyException ex){
             return "This email already exists";
         }
+    }
 
+    @PUT
+    @Timed
+    @Path("/id={id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public ClientDTO update(@PathParam("id")String id, ClientDTO clientDTO){
+        return clientsService.updateClient(clientDTO,id);
     }
 
 }
