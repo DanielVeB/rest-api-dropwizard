@@ -1,13 +1,9 @@
 package com.comarch.danielkurosz.data;
 
-
-import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Property;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -24,27 +20,54 @@ public class ClientEntity {
     private Date creationDate;
 
 
-    public ClientEntity(String email, String firstName, String lastName, String creationDate) {
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        try {
-            if(creationDate!=null) this.creationDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(creationDate);
-            else this.creationDate =null;
-        } catch (ParseException e) {
-            e.printStackTrace();
+    public ClientEntity() {
+    }
+
+    // builder pattern
+    //-------------------------------------------------------------
+    private ClientEntity(ClientEntityBuilder clientEntityBuilder) {
+        this.firstName = clientEntityBuilder.firstName;
+        this.lastName = clientEntityBuilder.lastName;
+        this.email = clientEntityBuilder.email;
+        this.creationDate = clientEntityBuilder.creationDate;
+    }
+
+    public static class ClientEntityBuilder {
+        private String firstName;
+        private String lastName;
+        private String email;
+        private Date creationDate;
+
+        public ClientEntityBuilder() {
+
         }
 
+        public ClientEntityBuilder firstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public ClientEntityBuilder lastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+
+        public ClientEntityBuilder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public ClientEntityBuilder creationDate(Date creationDate) {
+            this.creationDate = creationDate;
+            return this;
+        }
+
+        public ClientEntity build() {
+            return new ClientEntity(this);
+        }
     }
+//    ---------------------------------------------------------------------
 
-    public ClientEntity(String email, String firstName, String lastName){
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-
-    public ClientEntity(){}
 
     public UUID getId() {
         return id;
@@ -78,8 +101,8 @@ public class ClientEntity {
         this.lastName = lastName;
     }
 
-    public String getCreationDate(){
-        if (this.creationDate== null) return null;
+    public String getCreationDate() {
+        if (this.creationDate == null) return null;
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         return dateFormat.format(this.creationDate);
     }

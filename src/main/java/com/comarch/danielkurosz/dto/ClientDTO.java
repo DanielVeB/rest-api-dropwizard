@@ -3,8 +3,6 @@ package com.comarch.danielkurosz.dto;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.UUID;
-
 
 public class ClientDTO {
 
@@ -14,57 +12,50 @@ public class ClientDTO {
     private String email;
     private String creationDate;
 
-    public ClientDTO(){
+    public ClientDTO() {
     }
 
-    public ClientDTO(String email, String firstName, String lastName, String creationDate) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.creationDate = creationDate;
-    }
-
-    public ClientDTO(String email, String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }
 //----------------------------------------------------------------------
 //    builder pattern
 
-    private ClientDTO(ClientDTOBuilder clientDTOBuilder){
+    private ClientDTO(ClientDTOBuilder clientDTOBuilder) {
         this.firstName = clientDTOBuilder.firstName;
-        this.lastName =clientDTOBuilder.lastName;
+        this.lastName = clientDTOBuilder.lastName;
         this.email = clientDTOBuilder.email;
         this.creationDate = clientDTOBuilder.creationDate;
     }
 
-    public static class ClientDTOBuilder{
+    public static class ClientDTOBuilder {
         private String firstName;
         private String lastName;
         private String email;
         private String creationDate;
 
-        public ClientDTOBuilder(){
+        public ClientDTOBuilder() {
 
         }
-        public ClientDTOBuilder firstName(String firstName){
+
+        public ClientDTOBuilder firstName(String firstName) {
             this.firstName = firstName;
             return this;
         }
-        public ClientDTOBuilder lastName(String lastName){
+
+        public ClientDTOBuilder lastName(String lastName) {
             this.lastName = lastName;
             return this;
         }
-        public ClientDTOBuilder email(String email){
+
+        public ClientDTOBuilder email(String email) {
             this.email = email;
             return this;
         }
-        public ClientDTOBuilder creationDate(String creationDate){
+
+        public ClientDTOBuilder creationDate(String creationDate) {
             this.creationDate = creationDate;
             return this;
         }
-        public ClientDTO build(){
+
+        public ClientDTO build() {
             return new ClientDTO(this);
         }
     }
