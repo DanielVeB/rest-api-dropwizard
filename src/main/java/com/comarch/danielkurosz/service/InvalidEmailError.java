@@ -1,13 +1,13 @@
 package com.comarch.danielkurosz.service;
 
-public class InvalidEmailError extends Exception{
+public class InvalidEmailError extends Exception {
 
-    InvalidEmailError(){
+    InvalidEmailError() {
         super();
     }
 
     @Override
-    public String getMessage(){
+    public String getMessage() {
         return "Invalid email";
     }
 }
