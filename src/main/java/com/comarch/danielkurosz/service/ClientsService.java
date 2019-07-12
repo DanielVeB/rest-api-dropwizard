@@ -3,6 +3,7 @@ package com.comarch.danielkurosz.service;
 import com.comarch.danielkurosz.dao.MongoClientDAO;
 import com.comarch.danielkurosz.data.ClientEntity;
 import com.comarch.danielkurosz.dto.ClientDTO;
+import com.comarch.danielkurosz.exceptions.InvalidEmailError;
 import com.mongodb.DuplicateKeyException;
 
 import java.util.*;
@@ -23,24 +24,26 @@ public class ClientsService {
 
         HashMap<String, String> sorts = SortingConverter.getSorts(sortBy);
 
-        ClientEntity clientEntity_ = clientMapper.mapToClientEntity(clientDTO);
+        ClientEntity clientEntity = clientMapper.mapToClientEntity(clientDTO);
 
-        List<ClientEntity> clientEntities = mongoClientDAO.get(clientEntity_, sorts, limit, offset);
+        List<ClientEntity> clientEntities = mongoClientDAO.get(clientEntity, sorts, limit, offset);
         return clientEntities.stream()
                 .filter(Objects::nonNull)
-                .map(clientEntity -> clientMapper.mapToClientDTO(clientEntity))
+                .map(clientE -> clientMapper.mapToClientDTO(clientE))
                 .collect(Collectors.toList());
     }
 
 
-    public boolean createClient(ClientDTO clientDTO) throws InvalidEmailError, IllegalArgumentException, DuplicateKeyException {
+    public ClientDTO createClient(ClientDTO clientDTO) throws InvalidEmailError, IllegalArgumentException, DuplicateKeyException {
 
         clientDTO.setCreationDate(new Date());
         validateFields(clientDTO);
 
         ClientEntity clientEntity = clientMapper.mapToClientEntity(clientDTO);
         clientEntity.setId(UUID.randomUUID());
-        return mongoClientDAO.create(clientEntity);
+
+        ClientEntity returnClientEntity =  mongoClientDAO.create(clientEntity);
+        return clientMapper.mapToClientDTO(returnClientEntity);
 
     }
 
