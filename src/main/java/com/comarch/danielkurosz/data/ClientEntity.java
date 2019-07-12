@@ -1,7 +1,7 @@
 package com.comarch.danielkurosz.data;
 
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.*;
+
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -9,11 +9,12 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity("clients")
+@Indexes(@Index(fields = { @Field("email")}, options = @IndexOptions(unique = true)))
 public class ClientEntity {
 
     @Id
     private UUID id;
-
+    //@Indexed(options = @IndexOptions(unique = true))
     private String email;
     private String firstName;
     private String lastName;
@@ -30,13 +31,16 @@ public class ClientEntity {
         this.lastName = clientEntityBuilder.lastName;
         this.email = clientEntityBuilder.email;
         this.creationDate = clientEntityBuilder.creationDate;
+        this.id = clientEntityBuilder.id;
     }
 
     public static class ClientEntityBuilder {
         private String firstName;
         private String lastName;
+
         private String email;
         private Date creationDate;
+        private UUID id;
 
         public ClientEntityBuilder() {
 
@@ -59,6 +63,11 @@ public class ClientEntity {
 
         public ClientEntityBuilder creationDate(Date creationDate) {
             this.creationDate = creationDate;
+            return this;
+        }
+        //only for tests
+        public ClientEntityBuilder uuuid(UUID id) {
+            this.id = id;
             return this;
         }
 

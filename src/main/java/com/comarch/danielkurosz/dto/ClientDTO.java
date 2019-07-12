@@ -6,7 +6,6 @@ import java.util.Date;
 
 public class ClientDTO {
 
-
     private String firstName;
     private String lastName;
     private String email;
