@@ -14,13 +14,12 @@ public class ClientsService {
     private MongoClientDAO mongoClientDAO;
     private ClientMapper clientMapper;
 
-
     public ClientsService(MongoClientDAO mongoClientDAO, ClientMapper clientMapper) {
         this.mongoClientDAO = mongoClientDAO;
         this.clientMapper = clientMapper;
     }
 
-    public List<ClientDTO> getClients(ClientDTO clientDTO, String sortBy, int limit, int offset) {
+    public List<ClientDTO> getClients(ClientDTO clientDTO, String sortBy, int limit, int offset) throws IllegalArgumentException{
 
         HashMap<String, String> sorts = SortingConverter.getSorts(sortBy);
 
@@ -33,7 +32,6 @@ public class ClientsService {
                 .collect(Collectors.toList());
     }
 
-
     public ClientDTO createClient(ClientDTO clientDTO) throws InvalidEmailError, IllegalArgumentException, DuplicateKeyException {
 
         clientDTO.setCreationDate(new Date());
@@ -42,9 +40,9 @@ public class ClientsService {
         ClientEntity clientEntity = clientMapper.mapToClientEntity(clientDTO);
         clientEntity.setId(UUID.randomUUID());
 
-        ClientEntity returnClientEntity =  mongoClientDAO.create(clientEntity);
+        ClientEntity returnClientEntity = mongoClientDAO.create(clientEntity);
+        System.out.println(returnClientEntity.getFirstName() + "  " + returnClientEntity.getId());
         return clientMapper.mapToClientDTO(returnClientEntity);
-
     }
 
     public ClientDTO updateClient(ClientDTO clientDTO, String uuid) throws DuplicateKeyException, InvalidEmailError {
@@ -86,7 +84,8 @@ public class ClientsService {
         if (!clientDTO.getEmail().matches(regex)) {
             throw new InvalidEmailError();
         }
-    }}
+    }
+}
 
 
 

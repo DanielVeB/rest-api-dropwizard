@@ -37,21 +37,24 @@ public class ClientsResource {
                                @QueryParam("email") String email,
                                @QueryParam("sortBy") String sortBy,
                                @QueryParam("limit")@Min(0)@DefaultValue("10") int limit,
-                               @QueryParam("offset")@Min(0)@DefaultValue("0") int offset) {
+                               @QueryParam("offset")@Min(0)@DefaultValue("0") int offset)throws AppException {
 
+        try {
+            ClientDTO clientDTO = new ClientDTO.ClientDTOBuilder().firstName(firstName).
+                    lastName(lastName).
+                    email(email).build();
 
-        ClientDTO clientDTO = new ClientDTO.ClientDTOBuilder().firstName(firstName).
-                lastName(lastName).
-                email(email).build();
-
-        List<ClientDTO>clientDTOs = clientsService.getClients(clientDTO, sortBy, limit, offset);
-        return Response.ok(clientDTOs).build();
+            List<ClientDTO> clientDTOs = clientsService.getClients(clientDTO, sortBy, limit, offset);
+            return Response.ok(clientDTOs).build();
+        }catch (IllegalArgumentException ex){
+            throw new AppException(404,4004,"wrong sorting list","","link");
+        }
     }
 
     @POST
     @Timed
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response add(ClientDTO clientDTO)throws AppException {
         LOGGER.info("add client");
         try {
