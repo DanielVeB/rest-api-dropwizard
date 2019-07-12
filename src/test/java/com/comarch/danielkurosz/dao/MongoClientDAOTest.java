@@ -11,10 +11,7 @@ import org.junit.Test;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class MongoClientDAOTest {
 
@@ -109,8 +106,7 @@ public class MongoClientDAOTest {
 
     @Test
     public void update_IfEverythingIsAlright_ThenReturnUpdatedClient() {
-        ClientEntity clientEntity = createClient("Daniel", "Kurosz", "danielkurosz@gmail.com");
-        mongoClientDAO.create(clientEntity);
+
         ClientEntity clientEntityToUpdate = createClient("Daniel", "Kurosz", "danielkurosz@gmail.pl");
         mongoClientDAO.create(clientEntityToUpdate);
         clientEntityToUpdate.setFirstName("Jan");
@@ -163,7 +159,7 @@ public class MongoClientDAOTest {
         setUpDatabase();
 
         ClientEntity clientEntity = new ClientEntity.ClientEntityBuilder().build();
-        HashMap<String, String> sorts = new HashMap<>();
+        HashMap<String, String> sorts = new LinkedHashMap<>();
         sorts.put("email", "desc");
         sorts.put("firstName", "asc");
         List<ClientEntity> clients = mongoClientDAO.get(clientEntity, sorts, 5, 0);
