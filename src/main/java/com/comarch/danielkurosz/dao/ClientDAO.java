@@ -19,7 +19,7 @@ import java.util.UUID;
 
 public interface ClientDAO {
 
-    boolean create(ClientEntity clientEntity);
+    ClientEntity create(ClientEntity clientEntity);
 
     ClientEntity update(ClientEntity clientEntity);
 

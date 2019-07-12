@@ -23,17 +23,22 @@ public class MongoClientDAO implements ClientDAO {
     }
 
     @Override
-    public boolean create(ClientEntity clientEntity) throws DuplicateKeyException {
+    public ClientEntity create(ClientEntity clientEntity) throws DuplicateKeyException {
+
         datastore.save(clientEntity);
-        return true;
+
+        return datastore.get(ClientEntity.class, clientEntity.getId());
     }
 
     @Override
     public ClientEntity update(ClientEntity clientEntity) throws DuplicateKeyException {
 
         Query<ClientEntity> query = datastore.createQuery(ClientEntity.class).field("_id").equal(clientEntity.getId());
+
         UpdateOperations<ClientEntity> operation = datastore.createUpdateOperations(ClientEntity.class).
-                set("firstName", clientEntity.getFirstName()).set("lastName", clientEntity.getLastName()).set("email", clientEntity.getEmail());
+                set("firstName", clientEntity.getFirstName()).
+                set("lastName", clientEntity.getLastName()).
+                set("email", clientEntity.getEmail());
 
         datastore.update(query, operation);
 
@@ -50,7 +55,9 @@ public class MongoClientDAO implements ClientDAO {
         ClientEntity client;
 
         client = datastore.get(ClientEntity.class, id);
-        if (client == null) throw new NullPointerException();
+        if (client == null) {
+            throw new NullPointerException();
+        }
         datastore.delete(client);
 
         return client;
@@ -61,20 +68,31 @@ public class MongoClientDAO implements ClientDAO {
 
         Query<ClientEntity> query = this.datastore.createQuery(ClientEntity.class);
 
-        if (clientEntity.getFirstName() != null) query.field("firstName").equal(clientEntity.getFirstName());
-        if (clientEntity.getLastName() != null) query.field("lastName").equal(clientEntity.getLastName());
-        if (clientEntity.getEmail() != null) query.field("email").equal(clientEntity.getEmail());
+        query = applyToQuery(query, "firstName", clientEntity.getFirstName());
+        query = applyToQuery(query, "lastName", clientEntity.getLastName());
+        query = applyToQuery(query, "email", clientEntity.getEmail());
 
         if (sorts != null) {
             Sort[] mongosorts = new Sort[sorts.size()];
-            int i = 0;
+            int i = sorts.size()-1;
             for (Map.Entry<String, String> sort : sorts.entrySet()) {
-                if (sort.getValue().equals("asc")) mongosorts[i] = Sort.ascending(sort.getKey());
-                if (sort.getValue().equals("desc")) mongosorts[i] = Sort.descending(sort.getKey());
-                i++;
+                if (sort.getValue().equals("asc")) {
+                    mongosorts[i] = Sort.ascending(sort.getKey());
+                }
+                if (sort.getValue().equals("desc")) {
+                    mongosorts[i] = Sort.descending(sort.getKey());
+                }
+                i--;
             }
             query.order(mongosorts);
         }
         return query.asList(new FindOptions().limit(limit).skip(offset));
+    }
+
+    private Query<ClientEntity> applyToQuery(Query<ClientEntity> query, String fieldName, String fieldValue) {
+        if (fieldValue != null) {
+            return query.field(fieldName).equal(fieldValue);
+        }
+        return query;
     }
 }
