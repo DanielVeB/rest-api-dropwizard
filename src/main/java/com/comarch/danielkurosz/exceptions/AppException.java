@@ -10,23 +10,23 @@ public class AppException extends Exception {
     /** link documenting the exception */
     private String link;
 
-    /** detailed error description for developers*/
-    private String developerMessage;
+    /** extra information how can it be repaired*/
+    private String advice;
 
     /**
      *
      * @param status contains the same HTTP Status code returned by the server
      * @param code application specific error code
      * @param message message describing the error
-     * @param developerMessage extra information that might useful for developers
+     * @param advice extra information how can it be repaired
      * @param link link point to page where the error message is documented
      */
     public AppException(int status, int code, String message,
-                        String developerMessage, String link) {
+                        String advice, String link) {
         super(message);
         this.status = status;
         this.code = code;
-        this.developerMessage = developerMessage;
+        this.advice = advice;
         this.link = link;
     }
 
@@ -48,12 +48,12 @@ public class AppException extends Exception {
         this.code = code;
     }
 
-    public String getDeveloperMessage() {
-        return developerMessage;
+    public String getAdvice() {
+        return advice;
     }
 
-    public void setDeveloperMessage(String developerMessage) {
-        this.developerMessage = developerMessage;
+    public void setAdvice(String advice) {
+        this.advice = advice;
     }
 
     public String getLink() {

@@ -26,9 +26,9 @@ public class ExceptionDTO{
     @XmlElement(name = "link")
     private String link;
 
-    /** extra information that might useful for developers */
-    @XmlElement(name = "developerMessage")
-    private String developerMessage;
+    /** extra information how it can be repaired */
+    @XmlElement(name = "advice")
+    private String advice;
 
     public int getStatus() {
         return status;
@@ -54,12 +54,12 @@ public class ExceptionDTO{
         this.message = message;
     }
 
-    public String getDeveloperMessage() {
-        return developerMessage;
+    public String getAdvice() {
+        return advice;
     }
 
-    public void setDeveloperMessage(String developerMessage) {
-        this.developerMessage = developerMessage;
+    public void setAdvice(String advice) {
+        this.advice = advice;
     }
 
     public String getLink() {

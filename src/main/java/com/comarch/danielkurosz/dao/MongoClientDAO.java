@@ -74,7 +74,7 @@ public class MongoClientDAO implements ClientDAO {
 
         if (sorts != null) {
             Sort[] mongosorts = new Sort[sorts.size()];
-            int i = sorts.size()-1;
+            int i = 0;
             for (Map.Entry<String, String> sort : sorts.entrySet()) {
                 if (sort.getValue().equals("asc")) {
                     mongosorts[i] = Sort.ascending(sort.getKey());
@@ -82,7 +82,7 @@ public class MongoClientDAO implements ClientDAO {
                 if (sort.getValue().equals("desc")) {
                     mongosorts[i] = Sort.descending(sort.getKey());
                 }
-                i--;
+                i++;
             }
             query.order(mongosorts);
         }
