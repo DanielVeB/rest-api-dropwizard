@@ -1,8 +1,8 @@
-package com.comarch.danielkurosz.service;
+package com.comarch.danielkurosz.exceptions;
 
 public class InvalidEmailError extends Exception {
 
-    InvalidEmailError() {
+    public InvalidEmailError() {
         super();
     }
 
