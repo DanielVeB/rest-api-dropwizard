@@ -1,36 +1,26 @@
 package com.comarch.danielkurosz;
 
 import com.comarch.danielkurosz.dao.MongoClientDAO;
-import com.comarch.danielkurosz.data.ClientEntity;
+import com.comarch.danielkurosz.dao.MongoDatabaseConfigurator;
 import com.comarch.danielkurosz.exceptions.AppExceptionMapper;
 import com.comarch.danielkurosz.health.RestCheck;
 import com.comarch.danielkurosz.resources.ClientsResource;
 import com.comarch.danielkurosz.service.ClientMapper;
 import com.comarch.danielkurosz.service.ClientsService;
-import com.mongodb.MongoClient;
+import com.comarch.danielkurosz.service.SortingConverter;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Morphia;
 
 public class ClientsServiceApp extends Application<ClientServiceConfiguration> {
-    private static MongoClientDAO mongoClientDAO;
-    private static ClientMapper clientMapper;
+
     private static ClientsService clientsService;
-    private static Datastore datastore;
 
     public static void main(String[] args) throws Exception {
 
-        clientMapper = new ClientMapper();
-
-        //set up database
-        Morphia morphia = new Morphia();
-        morphia.map(ClientEntity.class);
-        datastore = morphia.createDatastore(new MongoClient(), "dropwizard");
-        datastore.ensureIndexes();
-        mongoClientDAO = new MongoClientDAO(datastore);
-
-        clientsService = new ClientsService(mongoClientDAO, clientMapper);
+        ClientMapper clientMapper = new ClientMapper();
+        MongoClientDAO mongoClientDAO = MongoDatabaseConfigurator.configureMongo();
+        SortingConverter sortingConverter = new SortingConverter();
+        clientsService = new ClientsService(mongoClientDAO, clientMapper, sortingConverter);
 
         new ClientsServiceApp().run(args);
     }
