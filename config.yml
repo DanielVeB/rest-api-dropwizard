@@ -8,3 +8,13 @@ server:
   adminConnectors:
     - type: http
       port: 9001
+
+httpClient:
+  proxy:
+    host: 127.0.0.1
+    port: 9003
+    scheme: http
+    auth:
+      username: admin
+      password: password
+      
