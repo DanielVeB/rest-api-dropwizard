@@ -1,25 +1,35 @@
 package com.comarch.danielkurosz.exceptions;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class AppException extends Exception {
 
     private Integer status;
 
-    /** application specific error code */
+    /**
+     * application specific error code
+     */
     private int code;
 
-    /** link documenting the exception */
+    /**
+     * link documenting the exception
+     */
     private String link;
 
-    /** extra information how can it be repaired*/
+    /**
+     * extra information how can it be repaired
+     */
     private String advice;
 
     /**
-     *
-     * @param status contains the same HTTP Status code returned by the server
-     * @param code application specific error code
+     * @param status  contains the same HTTP Status code returned by the server
+     * @param code    application specific error code
      * @param message message describing the error
-     * @param advice extra information how can it be repaired
-     * @param link link point to page where the error message is documented
+     * @param advice  extra information how can it be repaired
+     * @param link    link point to page where the error message is documented
      */
     public AppException(int status, int code, String message,
                         String advice, String link) {
@@ -27,40 +37,6 @@ public class AppException extends Exception {
         this.status = status;
         this.code = code;
         this.advice = advice;
-        this.link = link;
-    }
-
-    public AppException() { }
-
-     int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public String getAdvice() {
-        return advice;
-    }
-
-    public void setAdvice(String advice) {
-        this.advice = advice;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
         this.link = link;
     }
 }
