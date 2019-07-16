@@ -3,9 +3,7 @@ package com.comarch.danielkurosz.resources;
 import com.codahale.metrics.annotation.Timed;
 import com.comarch.danielkurosz.dto.ClientDTO;
 import com.comarch.danielkurosz.exceptions.AppException;
-import com.comarch.danielkurosz.exceptions.InvalidEmailError;
 import com.comarch.danielkurosz.service.ClientsService;
-import com.mongodb.DuplicateKeyException;
 
 import javax.validation.constraints.Min;
 import javax.ws.rs.*;
@@ -37,16 +35,13 @@ public class ClientsResource {
                                @QueryParam("limit") @Min(0) @DefaultValue("10") int limit,
                                @QueryParam("offset") @Min(0) @DefaultValue("0") int offset) throws AppException {
 
-        try {
-            ClientDTO clientDTO = new ClientDTO.ClientDTOBuilder().firstName(firstName).
-                    lastName(lastName).
-                    email(email).build();
+        ClientDTO clientDTO = new ClientDTO.ClientDTOBuilder().firstName(firstName).
+                lastName(lastName).
+                email(email).build();
 
-            List<ClientDTO> clientDTOs = clientsService.getClients(clientDTO, sortBy, limit, offset);
-            return Response.ok(clientDTOs).build();
-        } catch (IllegalArgumentException ex) {
-            throw new AppException(404, 4004, "wrong sorting list", "", "link");
-        }
+        List<ClientDTO> clientDTOs = clientsService.getClients(clientDTO, sortBy, limit, offset);
+        return Response.ok(clientDTOs).build();
+
     }
 
     @POST
@@ -55,17 +50,8 @@ public class ClientsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response add(ClientDTO clientDTO) throws AppException {
         LOGGER.info("add client");
-        try {
-            ClientDTO client = clientsService.createClient(clientDTO);
-            return Response.ok(client).build();
-
-        } catch (InvalidEmailError ex) {
-            throw new AppException(404, 4004, "This email is incorrect", "", "link");
-        } catch (IllegalArgumentException ex) {
-            throw new AppException(404, 4004, "Empty fields", "", "link");
-        } catch (DuplicateKeyException ex) {
-            throw new AppException(404, 4004, "This email already exists", "", "link");
-        }
+        ClientDTO client = clientsService.createClient(clientDTO);
+        return Response.ok(client).build();
     }
 
     @PUT
@@ -75,20 +61,8 @@ public class ClientsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(@PathParam("id") String id, ClientDTO clientDTO) throws AppException {
         LOGGER.info("update client, id:" + id);
-        try {
-            ClientDTO client = clientsService.updateClient(clientDTO, id);
-            return Response.ok(client).build();
-
-        } catch (DuplicateKeyException ex) {
-            throw new AppException(404, 4004, "This email already exists", "", "link");
-        } catch (InvalidEmailError ex) {
-            throw new AppException(404, 4004, "This email is incorrect", "", "link");
-        } catch (NullPointerException ex) {
-            throw new AppException(404, 4004, "Wrong user id", "", "link");
-        } catch (IllegalArgumentException ex) {
-            throw new AppException(404, 4004, "Empty fields", "", "link");
-        }
-
+        ClientDTO client = clientsService.updateClient(clientDTO, id);
+        return Response.ok(client).build();
     }
 
     @DELETE
@@ -98,13 +72,9 @@ public class ClientsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response delete(@PathParam("id") String id) throws AppException {
         LOGGER.info("remove client with id: " + id);
-        try {
-            ClientDTO client = clientsService.deleteClient(id);
-            return Response.ok(client).build();
+        ClientDTO client = clientsService.deleteClient(id);
+        return Response.ok(client).build();
 
-        } catch (NullPointerException ex) {
-            throw new AppException(404, 4004, "Wrong user id", "", "link");
-        }
     }
 
 }

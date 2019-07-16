@@ -1,20 +1,22 @@
 package com.comarch.danielkurosz.service;
 
+import com.comarch.danielkurosz.exceptions.AppException;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 
-class SortingConverter {
+public class SortingConverter {
 
-    static HashMap<String, String> getSorts(String sortList) throws IllegalArgumentException {
+    public HashMap<String, String> getSorts(String sortList) throws AppException {
         HashMap<String, String> sorts = new HashMap<>();
-
+        if(sortList ==null)return null;
         // must to add ',' at the end of sortList to good working regex
         sortList+=",";
         if(!sortList.matches("(((firstName)|(lastName)|(email)):((asc)|(desc)),)*")){
-            throw new IllegalArgumentException();
+            throw new AppException(400,4004,"wrong sort list","","");
         }
 
         List<String> sortlist = new LinkedList<>(Arrays.asList(sortList.split(",")));

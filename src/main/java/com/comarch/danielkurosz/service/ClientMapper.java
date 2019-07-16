@@ -6,27 +6,29 @@ import com.comarch.danielkurosz.dto.ClientDTO;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 public class ClientMapper {
 
-    public ClientDTO mapToClientDTO(ClientEntity clientEntity) {
+    ClientDTO mapToClientDTO(ClientEntity clientEntity) {
+
         return new ClientDTO.ClientDTOBuilder().
+                id(clientEntity.getId().toString()).
                 email(clientEntity.getEmail()).
                 firstName(clientEntity.getFirstName()).
                 lastName(clientEntity.getLastName()).
                 creationDate(clientEntity.getCreationDate()).build();
     }
 
-    public ClientEntity mapToClientEntity(ClientDTO clientDTO) {
+    ClientEntity mapToClientEntity(ClientDTO clientDTO) {
 
         Date creationDate = null;
         try {
             if (clientDTO.getCreationDate() != null)
                 creationDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(clientDTO.getCreationDate());
         } catch (ParseException e) {
-            e.printStackTrace();
+            creationDate = new Date();
         }
-
         return new ClientEntity.ClientEntityBuilder().
                 email(clientDTO.getEmail()).
                 firstName(clientDTO.getFirstName()).
