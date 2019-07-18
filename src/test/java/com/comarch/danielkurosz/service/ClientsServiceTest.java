@@ -4,7 +4,6 @@ import com.comarch.danielkurosz.dao.MongoClientDAO;
 import com.comarch.danielkurosz.data.ClientEntity;
 import com.comarch.danielkurosz.dto.ClientDTO;
 import com.comarch.danielkurosz.exceptions.AppException;
-import com.comarch.danielkurosz.exceptions.DuplicateEmailException;
 import com.mongodb.DuplicateKeyException;
 import org.junit.Assert;
 import org.junit.Before;
