@@ -9,12 +9,8 @@ server:
     - type: http
       port: 9001
 
-httpClient:
-  proxy:
-    host: 127.0.0.1
-    port: 9003
-    scheme: http
-    auth:
-      username: admin
-      password: password
-      
+login: daniel
+password: password1
+
+tagServiceLogin: h2a921as%21
+tagServicePassword: 7as12$1as0431hjd
