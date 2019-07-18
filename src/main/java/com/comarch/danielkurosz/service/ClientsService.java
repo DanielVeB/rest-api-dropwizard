@@ -51,6 +51,7 @@ public class ClientsService {
         } catch (DuplicateKeyException ex) {
             throw new DuplicateEmailException();
         }
+
         return clientMapper.mapToClientDTO(returnClientEntity);
     }
 

@@ -7,15 +7,20 @@ import lombok.Setter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 @Getter @Setter
 public class ClientDTO {
+
     private String id;
     private String firstName;
     private String lastName;
     private String email;
     @Setter(AccessLevel.NONE)
     private String creationDate;
+
+    private List<UserTagDTO> tags;
 
     public ClientDTO() {
     }
@@ -74,5 +79,14 @@ public class ClientDTO {
 //        ISO 8601 date format: 2019-07-08T08:57:08+00:00
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         this.creationDate = dateFormat.format(creationDate);
+    }
+
+    public void setTags(List<UserTagDTO> tags){
+        this.tags = tags;
+
+    }
+
+    public List<UserTagDTO> getTags(){
+        return tags;
     }
 }

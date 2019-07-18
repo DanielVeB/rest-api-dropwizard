@@ -14,7 +14,6 @@ public class ClientEntity {
 
     @Id
     private UUID id;
-    //@Indexed(options = @IndexOptions(unique = true))
     private String email;
     private String firstName;
     private String lastName;
