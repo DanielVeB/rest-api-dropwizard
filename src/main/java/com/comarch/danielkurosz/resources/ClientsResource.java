@@ -4,11 +4,14 @@ import com.codahale.metrics.annotation.Timed;
 import com.comarch.danielkurosz.clients.TagsClient;
 import com.comarch.danielkurosz.dto.ClientDTO;
 import com.comarch.danielkurosz.exceptions.AppException;
+import com.comarch.danielkurosz.exceptions.SortListException;
 import com.comarch.danielkurosz.service.ClientsService;
-import feign.Client;
 import io.dropwizard.auth.Auth;
 
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -40,15 +43,14 @@ public class ClientsResource {
                                @QueryParam("sortBy") String sortBy,
                                @QueryParam("limit") @Min(0) @DefaultValue("10") int limit,
                                @QueryParam("offset") @Min(0) @DefaultValue("0") int offset) throws AppException {
-
+        LOGGER.info("get clients");
 
         ClientDTO clientDTO = new ClientDTO.ClientDTOBuilder().firstName(firstName).
                 lastName(lastName).
                 email(email).build();
 
         List<ClientDTO> clientsDTO = clientsService.getClients(clientDTO, sortBy, limit, offset);
-        //System.out.println(clientsDTO.size());
-        for(ClientDTO c : clientsDTO){
+        for (ClientDTO c : clientsDTO) {
             c.setTags(this.client.tags(c.getId()));
         }
         return Response.ok(clientsDTO).build();
@@ -59,11 +61,11 @@ public class ClientsResource {
     @Timed
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response add(ClientDTO clientDTO) throws AppException {
+    public Response add(@NotNull @Valid ClientDTO clientDTO) throws AppException {
         LOGGER.info("add client");
+
         ClientDTO resultclientDTO = clientsService.createClient(clientDTO);
         this.client.create(resultclientDTO.getId());
-        LOGGER.info("tags add client");
         return Response.ok(resultclientDTO).build();
     }
 
@@ -72,7 +74,7 @@ public class ClientsResource {
     @Path("/id={id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response update(@PathParam("id") String id, ClientDTO clientDTO) throws AppException {
+    public Response update(@PathParam("id") String id,@NotNull @Valid ClientDTO clientDTO) throws AppException {
         LOGGER.info("update client, id:" + id);
         ClientDTO client = clientsService.updateClient(clientDTO, id);
         return Response.ok(client).build();

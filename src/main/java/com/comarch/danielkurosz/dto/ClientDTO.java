@@ -1,21 +1,27 @@
 package com.comarch.danielkurosz.dto;
 
+import com.comarch.danielkurosz.constraint.Email;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
-@Getter @Setter
+@Getter
+@Setter
 public class ClientDTO {
 
     private String id;
+    @NotNull
     private String firstName;
+    @NotNull
     private String lastName;
+    @NotNull
+    @Email
     private String email;
     @Setter(AccessLevel.NONE)
     private String creationDate;
@@ -46,10 +52,12 @@ public class ClientDTO {
         public ClientDTOBuilder() {
 
         }
+
         public ClientDTOBuilder id(String id) {
             this.id = id;
             return this;
         }
+
         public ClientDTOBuilder firstName(String firstName) {
             this.firstName = firstName;
             return this;
@@ -74,19 +82,20 @@ public class ClientDTO {
             return new ClientDTO(this);
         }
     }
-//    ---------------------------------------------------------------------
+
+    //    ---------------------------------------------------------------------
     public void setCreationDate(Date creationDate) {
 //        ISO 8601 date format: 2019-07-08T08:57:08+00:00
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         this.creationDate = dateFormat.format(creationDate);
     }
 
-    public void setTags(List<UserTagDTO> tags){
+    public void setTags(List<UserTagDTO> tags) {
         this.tags = tags;
 
     }
 
-    public List<UserTagDTO> getTags(){
+    public List<UserTagDTO> getTags() {
         return tags;
     }
 }

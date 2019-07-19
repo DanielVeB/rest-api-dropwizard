@@ -10,8 +10,8 @@ import java.util.List;
 public interface TagsClient {
 
     @RequestLine("GET /userid={id}")
-    List<UserTagDTO> tags(@Param("id")String id);
+    List<UserTagDTO> tags(@Param("id") String id);
 
     @RequestLine("POST /userid={id}")
-    Response create(@Param("id")String id);
+    Response create(@Param("id") String id);
 }

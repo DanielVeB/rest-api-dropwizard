@@ -2,14 +2,14 @@ package com.comarch.danielkurosz.data;
 
 import org.mongodb.morphia.annotations.*;
 
-
+import javax.validation.constraints.NotNull;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
 @Entity("clients")
-@Indexes(@Index(fields = { @Field("email")}, options = @IndexOptions(unique = true)))
+@Indexes(@Index(fields = {@Field("email")}, options = @IndexOptions(unique = true)))
 public class ClientEntity {
 
     @Id
@@ -64,6 +64,7 @@ public class ClientEntity {
             this.creationDate = creationDate;
             return this;
         }
+
         //only for tests
         public ClientEntityBuilder uuuid(UUID id) {
             this.id = id;

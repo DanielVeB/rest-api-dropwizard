@@ -10,7 +10,6 @@ public class ClientServiceConfiguration extends Configuration {
     private String version;
 
 
-
     @NotEmpty
     private String login;
     @NotEmpty
@@ -25,34 +24,42 @@ public class ClientServiceConfiguration extends Configuration {
     public void setLogin(String login) {
         this.login = login;
     }
+
     @JsonProperty
     public void setPassword(String password) {
         this.password = password;
     }
+
     @JsonProperty
     String getLogin() {
         return login;
     }
+
     @JsonProperty
     String getPassword() {
         return password;
     }
+
     @JsonProperty
     String getVersion() {
         return version;
     }
+
     @JsonProperty
     String getTagServiceLogin() {
         return tagServiceLogin;
     }
+
     @JsonProperty
     public void setTagServiceLogin(String tagServiceLogin) {
         this.tagServiceLogin = tagServiceLogin;
     }
+
     @JsonProperty
     String getTagServicePassword() {
         return tagServicePassword;
     }
+
     @JsonProperty
     public void setTagServicePassword(String tagServicePassword) {
         this.tagServicePassword = tagServicePassword;

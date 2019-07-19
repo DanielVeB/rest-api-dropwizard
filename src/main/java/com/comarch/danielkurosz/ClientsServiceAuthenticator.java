@@ -10,15 +10,16 @@ public class ClientsServiceAuthenticator implements Authenticator<BasicCredentia
     private String login;
     private String password;
 
-    ClientsServiceAuthenticator(String login, String password){
+    ClientsServiceAuthenticator(String login, String password) {
         this.login = login;
         this.password = password;
     }
 
     @Override
     public Optional<Boolean> authenticate(BasicCredentials credentials) throws AuthenticationException {
-        if(credentials.getUsername().equals(this.login) && credentials.getPassword().equals(this.password)){
+        if (credentials.getUsername().equals(this.login) && credentials.getPassword().equals(this.password)) {
             return Optional.of(true);
-        }return Optional.absent();
+        }
+        return Optional.absent();
     }
 }

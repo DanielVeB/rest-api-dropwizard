@@ -7,7 +7,8 @@ import org.apache.commons.beanutils.BeanUtils;
 
 import java.lang.reflect.InvocationTargetException;
 
-@Getter @Setter
+@Getter
+@Setter
 public class ExceptionDTO {
 
     /**

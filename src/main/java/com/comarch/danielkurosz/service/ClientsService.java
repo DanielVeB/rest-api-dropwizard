@@ -40,7 +40,6 @@ public class ClientsService {
     public ClientDTO createClient(ClientDTO clientDTO) throws AppException {
 
         clientDTO.setCreationDate(new Date());
-        ClientValidator.validate(clientDTO);
 
         ClientEntity clientEntity = clientMapper.mapToClientEntity(clientDTO);
         clientEntity.setId(UUID.randomUUID());
@@ -57,18 +56,19 @@ public class ClientsService {
 
     public ClientDTO updateClient(ClientDTO clientDTO, String uuid) throws AppException {
 
-        ClientValidator.validate(clientDTO);
         ClientEntity clientEntity = clientMapper.mapToClientEntity(clientDTO);
 
         ClientEntity returnClientEntity;
         try {
             clientEntity.setId(UUID.fromString(uuid));
             returnClientEntity = mongoClientDAO.update(clientEntity);
+            if(returnClientEntity == null){
+               throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),"There is no user with this id","","");
+            }
         } catch (DuplicateKeyException ex) {
             throw new DuplicateEmailException();
-        } catch (IllegalArgumentException ex){
-            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
-                    Response.Status.BAD_REQUEST.getStatusCode(),"Invalid UUID String","Please add correct ID","");
+        } catch (IllegalArgumentException ex) {
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), "Invalid UUID String", "Please add correct ID", "");
         }
         return clientMapper.mapToClientDTO(returnClientEntity);
     }
@@ -78,10 +78,9 @@ public class ClientsService {
         try {
             clientEntity = mongoClientDAO.delete(UUID.fromString(id));
         } catch (NullPointerException ex) {
-            throw new AppException(400, 400, "wrong id", "", "");
-        }catch (IllegalArgumentException ex){
-            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
-                    Response.Status.BAD_REQUEST.getStatusCode(),"Invalid UUID String","Please add correct ID","");
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), "There is no user with this id", "Please add another id", "");
+        } catch (IllegalArgumentException ex) {
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), "Invalid UUID String", "Please add correct ID", "");
         }
         return clientMapper.mapToClientDTO(clientEntity);
 
