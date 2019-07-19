@@ -11,8 +11,8 @@ public class AppExceptionMapperTest {
 
     @Test
     public void toResponse_WhenExceptionIsPassed_ThenReturnResponse() {
-        AppException appException = new AppException(404,Response.Status.BAD_REQUEST.getStatusCode(), "message", "advice", "link");
+        AppException appException = new AppException(Response.Status.BAD_REQUEST.getStatusCode(), "message", "advice", "link");
         Response response = testObject.toResponse(appException);
-        Assert.assertEquals(404, response.getStatus());
+        Assert.assertEquals(400, response.getStatus());
     }
 }
