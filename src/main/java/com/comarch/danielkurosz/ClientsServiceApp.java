@@ -1,5 +1,6 @@
 package com.comarch.danielkurosz;
 
+import com.comarch.danielkurosz.auth.AuthUser;
 import com.comarch.danielkurosz.clients.TagsClient;
 import com.comarch.danielkurosz.dao.MongoClientDAO;
 import com.comarch.danielkurosz.dao.MongoDatabaseConfigurator;
@@ -13,6 +14,7 @@ import com.comarch.danielkurosz.service.SortingConverter;
 import feign.Feign;
 import feign.auth.BasicAuthRequestInterceptor;
 import feign.gson.GsonDecoder;
+import feign.gson.GsonEncoder;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthFactory;
 import io.dropwizard.auth.basic.BasicAuthFactory;
@@ -28,16 +30,16 @@ public class ClientsServiceApp extends Application<ClientServiceConfiguration> {
 
     public static void main(String[] args) throws Exception {
 
-        ClientMapper clientMapper = new ClientMapper();
-        MongoClientDAO mongoClientDAO = MongoDatabaseConfigurator.configureMongo();
-        SortingConverter sortingConverter = new SortingConverter();
-        clientsService = new ClientsService(mongoClientDAO, clientMapper, sortingConverter);
+
 
         new ClientsServiceApp().run(args);
     }
 
     @Override
     public void run(ClientServiceConfiguration configuration, Environment environment) {
+        ClientMapper clientMapper = new ClientMapper();
+        MongoClientDAO mongoClientDAO = MongoDatabaseConfigurator.configureMongo();
+        SortingConverter sortingConverter = new SortingConverter();
 
         ((DefaultServerFactory)configuration.getServerFactory()).setRegisterDefaultExceptionMappers(false);
         // Register custom mapper
@@ -49,17 +51,20 @@ public class ClientsServiceApp extends Application<ClientServiceConfiguration> {
 
         TagsClient tagsClient = Feign.builder()
                 .decoder(new GsonDecoder())
+                .encoder(new GsonEncoder())
                 .requestInterceptor(new BasicAuthRequestInterceptor(configuration.getTagServiceLogin(), configuration.getTagServicePassword()))
                 .target(TagsClient.class, "http://localhost:9002/tags");
 
-        final ClientsResource clientsResource = new ClientsResource(clientsService, tagsClient);
+        clientsService = new ClientsService(mongoClientDAO, clientMapper, sortingConverter,tagsClient);
+
+        final ClientsResource clientsResource = new ClientsResource(clientsService);
         environment.jersey().register(clientsResource);
         environment.jersey().register(new AppExceptionMapper());
 
         environment.jersey().register(AuthFactory.binder(
                 new BasicAuthFactory<>(
                         new ClientsServiceAuthenticator(configuration.getLogin(), configuration.getPassword()),
-                        "SECURITY REALM", Boolean.class)));
+                        "SECURITY REALM", AuthUser.class)));
 
         environment.healthChecks().register("template", new RestCheck(configuration.getVersion()));
 
