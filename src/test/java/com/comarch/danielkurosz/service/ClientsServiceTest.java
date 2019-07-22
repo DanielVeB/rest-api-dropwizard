@@ -1,5 +1,6 @@
 package com.comarch.danielkurosz.service;
 
+import com.comarch.danielkurosz.clients.TagsClient;
 import com.comarch.danielkurosz.dao.MongoClientDAO;
 import com.comarch.danielkurosz.data.ClientEntity;
 import com.comarch.danielkurosz.dto.ClientDTO;
@@ -26,13 +27,15 @@ public class ClientsServiceTest {
     private ClientMapper clientMapper;
     @Mock
     private SortingConverter sortingConverter;
+    @Mock
+    private TagsClient tagsClient;
 
     private ClientsService clientsService;
 
     @Before
     public void init() {
 
-        clientsService = new ClientsService(mongoClientDAO, clientMapper, sortingConverter);
+        clientsService = new ClientsService(mongoClientDAO, clientMapper, sortingConverter,tagsClient);
 
     }
 
@@ -52,6 +55,8 @@ public class ClientsServiceTest {
     @Test(expected = AppException.class)
     public void createClient_WhenMongoClientDAOThrewDuplicateKeyException_ThenThrowDuplicateEmailException() throws AppException {
         when(mongoClientDAO.create(any())).thenThrow(DuplicateKeyException.class);
+        ClientEntity clientEntity = new ClientEntity();
+        when(clientMapper.mapToClientEntity(any())).thenReturn(clientEntity);
         ClientDTO clientDTO = new ClientDTO();
         clientsService.createClient(clientDTO);
     }
@@ -73,8 +78,8 @@ public class ClientsServiceTest {
         Assert.assertEquals("Passed and returned client should be the same", expectedDTO.getFirstName(), clientDTO.getFirstName());
     }
 
-    @Test(expected = AppException.class)
-    public void createClient_WhenPassedClientHasAnyEmptyField_ThenThrowAppException() throws AppException {
+    @Test(expected = NullPointerException.class)
+    public void createClient_WhenPassedClientHasAnyEmptyField_ThenThrowNullPointerException() throws AppException {
         ClientDTO clientDTO = new ClientDTO.ClientDTOBuilder().firstName("DANIEL").build();
         clientsService.createClient(clientDTO);
     }
@@ -92,11 +97,6 @@ public class ClientsServiceTest {
         clientsService.createClient(clientDTO);
     }
 
-    @Test(expected = AppException.class)
-    public void updateClient_WhenPassedClientHasAnyEmptyField_ThenThrowAppException() throws AppException {
-        ClientDTO clientDTO = new ClientDTO.ClientDTOBuilder().firstName("DANIEL").build();
-        clientsService.updateClient(clientDTO, UUID.randomUUID().toString());
-    }
 
     @Test(expected = AppException.class)
     public void updateClient_WhenPassInvalidUUID_ThenThrowAppException() throws AppException {
