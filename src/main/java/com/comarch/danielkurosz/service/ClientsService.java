@@ -7,11 +7,12 @@ import com.comarch.danielkurosz.dto.ClientDTO;
 import com.comarch.danielkurosz.dto.UserTagDTO;
 import com.comarch.danielkurosz.exceptions.AppException;
 import com.comarch.danielkurosz.exceptions.DuplicateEmailException;
+import com.comarch.danielkurosz.exceptions.InvalidUUIDException;
+import com.comarch.danielkurosz.exceptions.NoUserWithUUIDException;
 import com.google.gson.Gson;
 import com.mongodb.DuplicateKeyException;
 
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.core.Response;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,20 +39,20 @@ public class ClientsService {
 
         List<ClientEntity> clientEntities = mongoClientDAO.get(clientEntity, sorts, limit, offset);
 
-        List<ClientDTO> clientsDTO =  clientEntities.stream()
+        List<ClientDTO> clientsDTO = clientEntities.stream()
                 .filter(Objects::nonNull)
                 .map(clientE -> clientMapper.mapToClientDTO(clientE))
                 .collect(Collectors.toList());
 
         List<String> clientsId = new LinkedList<>();
-        for (ClientDTO clientDTO_ : clientsDTO){
+        for (ClientDTO clientDTO_ : clientsDTO) {
             clientsId.add(clientDTO_.getId());
         }
 
 //        connect with tag service to get tags for all passed id
-        HashMap<String,List<UserTagDTO>> tags = this.tagsClient.getTags(new Gson().toJson(clientsId.toArray()));
+        HashMap<String, List<UserTagDTO>> tags = this.tagsClient.getTags(new Gson().toJson(clientsId.toArray()));
 
-        for(ClientDTO DTOclient : clientsDTO){
+        for (ClientDTO DTOclient : clientsDTO) {
             DTOclient.setTags(tags.get(DTOclient.getId()));
         }
 
@@ -72,7 +73,7 @@ public class ClientsService {
             throw new DuplicateEmailException();
         }
 
-        ClientDTO returnedClient =  clientMapper.mapToClientDTO(returnClientEntity);
+        ClientDTO returnedClient = clientMapper.mapToClientDTO(returnClientEntity);
         this.tagsClient.create(returnedClient.getId());
         return returnedClient;
     }
@@ -85,13 +86,13 @@ public class ClientsService {
         try {
             clientEntity.setId(UUID.fromString(uuid));
             returnClientEntity = mongoClientDAO.update(clientEntity);
-            if(returnClientEntity == null){
-               throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),"There is no user with this id","","");
+            if (returnClientEntity == null) {
+                throw new NoUserWithUUIDException();
             }
         } catch (DuplicateKeyException ex) {
             throw new DuplicateEmailException();
         } catch (IllegalArgumentException ex) {
-            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), "Invalid UUID String", "Please add correct ID", "");
+            throw new InvalidUUIDException();
         }
         return clientMapper.mapToClientDTO(returnClientEntity);
     }
@@ -101,9 +102,9 @@ public class ClientsService {
         try {
             clientEntity = mongoClientDAO.delete(UUID.fromString(id));
         } catch (NullPointerException ex) {
-            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), "There is no user with this id", "Please add another id", "");
+            throw new NoUserWithUUIDException();
         } catch (IllegalArgumentException ex) {
-            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), "Invalid UUID String", "Please add correct ID", "");
+            throw new InvalidUUIDException();
         }
         return clientMapper.mapToClientDTO(clientEntity);
     }
