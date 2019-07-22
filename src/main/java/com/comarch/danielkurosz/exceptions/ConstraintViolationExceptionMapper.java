@@ -16,9 +16,6 @@ public class ConstraintViolationExceptionMapper implements
 
         AppExceptionMapper appExceptionMapper = new AppExceptionMapper();
 
-        System.out.println(exception.getConstraintViolations());
-
-
         List<String> messages = new LinkedList<>();
         for (ConstraintViolation<?> constraintViolation : exception.getConstraintViolations()) {
             messages.add(constraintViolation.getMessage());
