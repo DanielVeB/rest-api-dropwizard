@@ -9,10 +9,8 @@ import org.mongodb.morphia.query.Sort;
 import org.mongodb.morphia.query.UpdateOperations;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import javax.validation.Valid;
+import java.util.*;
 
 public class MongoClientDAO implements ClientDAO {
 
@@ -31,7 +29,7 @@ public class MongoClientDAO implements ClientDAO {
     }
 
     @Override
-    public ClientEntity update(ClientEntity clientEntity) throws DuplicateKeyException {
+    public ClientEntity update(@Valid ClientEntity clientEntity) throws DuplicateKeyException {
 
         Query<ClientEntity> query = datastore.createQuery(ClientEntity.class).field("_id").equal(clientEntity.getId());
 
@@ -65,6 +63,11 @@ public class MongoClientDAO implements ClientDAO {
 
     @Override
     public List<ClientEntity> get(ClientEntity clientEntity, HashMap<String, String> sorts, int limit, int offset) {
+
+        //because for Morphia limit = 0 means 'return everything'
+        if(limit==0){
+            return new LinkedList<>();
+        }
 
         Query<ClientEntity> query = this.datastore.createQuery(ClientEntity.class);
 

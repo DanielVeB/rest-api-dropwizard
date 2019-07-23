@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface TagsClient {
 
-    @RequestLine("POST /userid={id}")
-    Response create(@Param("id") String id);
+    @RequestLine("POST tags/client={client_id}")
+    Response create(@Param("client_id") String clientId);
 
-    @RequestLine("GET /users/{client_ids}")
-    HashMap<String, List<UserTagDTO>> getTags(@Param("client_ids") String clientsId);
+    @RequestLine("GET tags/clients?client_id={client_id}")
+    HashMap<String, List<UserTagDTO>> getTags(@Param("client_id") List<String> clientsId);
 }

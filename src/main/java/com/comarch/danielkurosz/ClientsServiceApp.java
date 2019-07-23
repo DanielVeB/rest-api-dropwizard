@@ -53,7 +53,7 @@ public class ClientsServiceApp extends Application<ClientServiceConfiguration> {
                 .decoder(new GsonDecoder())
                 .encoder(new GsonEncoder())
                 .requestInterceptor(new BasicAuthRequestInterceptor(configuration.getTagServiceLogin(), configuration.getTagServicePassword()))
-                .target(TagsClient.class, "http://localhost:9002/tags");
+                .target(TagsClient.class, "http://localhost:9002");
 
         clientsService = new ClientsService(mongoClientDAO, clientMapper, sortingConverter,tagsClient);
 

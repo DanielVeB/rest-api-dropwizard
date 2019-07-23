@@ -9,7 +9,6 @@ import com.comarch.danielkurosz.exceptions.AppException;
 import com.comarch.danielkurosz.exceptions.DuplicateEmailException;
 import com.comarch.danielkurosz.exceptions.InvalidUUIDException;
 import com.comarch.danielkurosz.exceptions.NoUserWithUUIDException;
-import com.google.gson.Gson;
 import com.mongodb.DuplicateKeyException;
 
 import javax.validation.constraints.NotNull;
@@ -45,12 +44,14 @@ public class ClientsService {
                 .collect(Collectors.toList());
 
         List<String> clientsId = new LinkedList<>();
+
         for (ClientDTO clientDTO_ : clientsDTO) {
             clientsId.add(clientDTO_.getId());
         }
 
+
 //        connect with tag service to get tags for all passed id
-        HashMap<String, List<UserTagDTO>> tags = this.tagsClient.getTags(new Gson().toJson(clientsId.toArray()));
+        HashMap<String, List<UserTagDTO>> tags = this.tagsClient.getTags(clientsId);
 
         for (ClientDTO DTOclient : clientsDTO) {
             DTOclient.setTags(tags.get(DTOclient.getId()));

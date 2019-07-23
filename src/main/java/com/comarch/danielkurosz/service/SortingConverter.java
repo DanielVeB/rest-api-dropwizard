@@ -3,7 +3,6 @@ package com.comarch.danielkurosz.service;
 import com.comarch.danielkurosz.exceptions.AppException;
 import com.comarch.danielkurosz.exceptions.SortListException;
 
-import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
