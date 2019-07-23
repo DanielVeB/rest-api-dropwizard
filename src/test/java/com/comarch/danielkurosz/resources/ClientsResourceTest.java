@@ -35,20 +35,20 @@ public class ClientsResourceTest {
     }
 
     @Test
-    public void get_EverythingIsAlright_ThenResponseShouldHaveStatus200() throws AppException {
+    public void read_EverythingIsAlright_ThenResponseShouldHaveStatus200() throws AppException {
         List<ClientDTO> clientDTOS = new LinkedList<>();
         when(clientsService.getClients(any(), any(), anyInt(), anyInt())).thenReturn(clientDTOS);
-        Response response = clientsResource.getClients(new AuthUser("daniel"), "Daniel", null, null, null, 1, 1);
+        Response response = clientsResource.read(new AuthUser("daniel"), "Daniel", null, null, null, 1, 1);
 
         Assert.assertEquals(200, response.getStatus());
 
     }
 
     @Test(expected = AppException.class)
-    public void get_WhenServiceThrewAppException_ThenThrowAppException() throws AppException {
+    public void read_WhenServiceThrowAppException_ThenThrowAppException() throws AppException {
 
         when(clientsService.getClients(any(), any(), anyInt(), anyInt())).thenThrow(AppException.class);
-        Response response = clientsResource.getClients(new AuthUser("daniel"), "Daniel", null, null, null, 1, 1);
+        clientsResource.read(new AuthUser("daniel"), "Daniel", null, null, null, 1, 1);
 
     }
 
@@ -57,9 +57,14 @@ public class ClientsResourceTest {
     public void create_EverythingIsAlright_ThenResponseShouldHaveStatus200() throws AppException {
         ClientDTO clientDTO = new ClientDTO();
         when(clientsService.createClient(any())).thenReturn(clientDTO);
-        Response response = clientsResource.add(new ClientDTO());
+        Response response = clientsResource.create(new ClientDTO());
 
         Assert.assertEquals(200, response.getStatus());
+    }
+    @Test(expected = AppException.class)
+    public void create_WhenServiceThrowAppException_ThenThrowAppException()throws AppException{
+        when(clientsService.createClient(any())).thenThrow(AppException.class);
+        clientsResource.create(new ClientDTO());
     }
 
     @Test
@@ -70,15 +75,27 @@ public class ClientsResourceTest {
 
         Assert.assertEquals(200, response.getStatus());
     }
+    @Test(expected = AppException.class)
+    public void delete_WhenServiceThrowAppException_ThenThrowAppException()throws AppException{
+        when(clientsService.deleteClient(any())).thenThrow(AppException.class);
+        clientsResource.delete("");
+    }
 
     @Test
     public void update_EverythingIsAlright_ThenResponseShouldHaveStatus200() throws AppException {
         ClientDTO clientDTO = new ClientDTO();
         when(clientsService.updateClient(any(), any())).thenReturn(clientDTO);
-        Response response = clientsResource.update("1", new ClientDTO());
+        Response response = clientsResource.update("id", new ClientDTO());
 
         Assert.assertEquals(200, response.getStatus());
     }
+    @Test(expected = AppException.class)
+    public void update_WhenServiceThrowAppException_ThenThrowAppException()throws AppException{
+        when(clientsService.updateClient(any(), any())).thenThrow(AppException.class);
+        clientsResource.update("id",new ClientDTO());
+    }
+
+
 
 
 }

@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -35,7 +37,7 @@ public class ClientsServiceTest {
     @Before
     public void init() {
 
-        clientsService = new ClientsService(mongoClientDAO, clientMapper, sortingConverter,tagsClient);
+        clientsService = new ClientsService(mongoClientDAO, clientMapper, sortingConverter, tagsClient);
 
     }
 
@@ -52,6 +54,15 @@ public class ClientsServiceTest {
         clientsService.getClients(new ClientDTO(), "string", 1, 1);
     }
 
+    @Test
+    public void getClient_WhenMongoClientsReturnEmptyList_ThenReturnEmptyList() throws AppException {
+        when(mongoClientDAO.get(any(), any(), anyInt(), anyInt())).thenReturn(new LinkedList<>());
+        ClientDTO clientDTO = new ClientDTO();
+        List<ClientDTO> list = clientsService.getClients(clientDTO, "string", 0, 1);
+        Assert.assertEquals(0, list.size());
+    }
+
+
     @Test(expected = AppException.class)
     public void createClient_WhenMongoClientDAOThrewDuplicateKeyException_ThenThrowDuplicateEmailException() throws AppException {
         when(mongoClientDAO.create(any())).thenThrow(DuplicateKeyException.class);
@@ -60,7 +71,6 @@ public class ClientsServiceTest {
         ClientDTO clientDTO = new ClientDTO();
         clientsService.createClient(clientDTO);
     }
-
 
     @Test
     public void createClient_WhenEverythingIsAlright_ThenReturnClientDTO() throws AppException {

@@ -67,7 +67,6 @@ public class MongoClientDAOTest {
 
         Assert.assertEquals("clients should be the same ", new Gson().toJson(clientEntity), new Gson().toJson(returnClient));
 
-
     }
 
     @Test(expected = DuplicateKeyException.class)
