@@ -28,11 +28,27 @@ public class ClientsResource {
         this.clientsService = clientsService;
     }
 
+    //    4 methods
+    //    C create - add new user
+    //    R read - get user from database
+    //    U update - update user by id
+    //    D delete  - delete user by id
+
+    @POST
+    @Timed
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response create(@NotNull @Valid ClientDTO clientDTO) throws AppException {
+
+        LOGGER.info("add client");
+        ClientDTO resultclientDTO = clientsService.createClient(clientDTO);
+        return Response.ok(resultclientDTO).build();
+    }
 
     @GET
     @Timed
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getClients(@Auth AuthUser authUser,
+    public Response read(@Auth AuthUser authUser,
                                @QueryParam("firstName") String firstName,
                                @QueryParam("lastName") String lastName,
                                @QueryParam("email") String email,
@@ -47,18 +63,6 @@ public class ClientsResource {
 
         List<ClientDTO> clientsDTO = clientsService.getClients(clientDTO, sortBy, limit, offset);
         return Response.ok(clientsDTO).build();
-
-    }
-
-    @POST
-    @Timed
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response add(@NotNull @Valid ClientDTO clientDTO) throws AppException {
-        LOGGER.info("add client");
-
-        ClientDTO resultclientDTO = clientsService.createClient(clientDTO);
-        return Response.ok(resultclientDTO).build();
     }
 
     @PUT
@@ -67,6 +71,7 @@ public class ClientsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(@PathParam("id") String id, @NotNull @Valid ClientDTO clientDTO) throws AppException {
+
         LOGGER.info("update client, id:" + id);
         ClientDTO client = clientsService.updateClient(clientDTO, id);
         return Response.ok(client).build();
@@ -78,9 +83,9 @@ public class ClientsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response delete(@PathParam("id") String id) throws AppException {
+
         LOGGER.info("remove client with id: " + id);
         ClientDTO client = clientsService.deleteClient(id);
         return Response.ok(client).build();
-
     }
 }

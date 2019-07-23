@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotNull;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,9 @@ public class ClientDTO {
     @NotNull
     @Email
     private String email;
+
+    private LocalDate dateOfBirthday;
+
     @Setter(AccessLevel.NONE)
     private String creationDate;
 
@@ -39,6 +43,7 @@ public class ClientDTO {
         this.firstName = clientDTOBuilder.firstName;
         this.lastName = clientDTOBuilder.lastName;
         this.email = clientDTOBuilder.email;
+        this.dateOfBirthday = clientDTOBuilder.dateOfBirthday;
         this.creationDate = clientDTOBuilder.creationDate;
     }
 
@@ -48,6 +53,7 @@ public class ClientDTO {
         private String lastName;
         private String email;
         private String creationDate;
+        private LocalDate dateOfBirthday;
 
         public ClientDTOBuilder() {
 
@@ -70,6 +76,10 @@ public class ClientDTO {
 
         public ClientDTOBuilder email(String email) {
             this.email = email;
+            return this;
+        }
+        public ClientDTOBuilder dateOfBirthday(LocalDate dateOfBirthday) {
+            this.dateOfBirthday = dateOfBirthday;
             return this;
         }
 
