@@ -2,8 +2,6 @@ package com.comarch.danielkurosz.data;
 
 import org.mongodb.morphia.annotations.*;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;

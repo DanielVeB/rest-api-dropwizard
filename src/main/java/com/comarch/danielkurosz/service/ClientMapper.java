@@ -16,12 +16,16 @@ public class ClientMapper {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         String creationDate = dateFormat.format(clientEntity.getCreationDate());
 
+        String birthdayDate = String.valueOf(clientEntity.getBirthday());
+
         return new ClientDTO.ClientDTOBuilder().
                 id(clientEntity.getId().toString()).
                 email(clientEntity.getEmail()).
                 firstName(clientEntity.getFirstName()).
                 lastName(clientEntity.getLastName()).
-                creationDate(creationDate).build();
+                creationDate(creationDate).
+                birthday(birthdayDate).build();
+
     }
 
     ClientEntity mapToClientEntity(ClientDTO clientDTO) {
