@@ -33,11 +33,12 @@ public class MongoClientDAO implements ClientDAO {
 
         Query<ClientEntity> query = datastore.createQuery(ClientEntity.class).field("_id").equal(clientEntity.getId());
 
-        UpdateOperations<ClientEntity> operation = datastore.createUpdateOperations(ClientEntity.class).
-                set("firstName", clientEntity.getFirstName()).
-                set("lastName", clientEntity.getLastName()).
-                set("email", clientEntity.getEmail()).
-                set("birthday", clientEntity.getBirthday());
+        UpdateOperations<ClientEntity> operation = datastore.createUpdateOperations(ClientEntity.class);
+
+        operation = applyToUpdateQuery(operation, "firstName", clientEntity.getFirstName());
+        operation = applyToUpdateQuery(operation,"lastName", clientEntity.getLastName());
+        operation = applyToUpdateQuery(operation,"email", clientEntity.getEmail());
+        operation = applyToUpdateQuery(operation,"birthday", clientEntity.getBirthday());
 
         datastore.update(query, operation);
 
@@ -93,10 +94,17 @@ public class MongoClientDAO implements ClientDAO {
         return query.asList(new FindOptions().limit(limit).skip(offset));
     }
 
-    private Query<ClientEntity> applyToQuery(Query<ClientEntity> query, String fieldName, String fieldValue) {
+    private Query<ClientEntity> applyToQuery(Query<ClientEntity> query, String fieldName, Object fieldValue) {
         if (fieldValue != null) {
             return query.field(fieldName).equal(fieldValue);
         }
         return query;
+    }
+
+    private UpdateOperations<ClientEntity> applyToUpdateQuery(UpdateOperations<ClientEntity> update, String fieldName, Object fieldValue){
+        if(fieldValue!= null){
+            return update.set(fieldName,fieldValue);
+        }
+        return update;
     }
 }
