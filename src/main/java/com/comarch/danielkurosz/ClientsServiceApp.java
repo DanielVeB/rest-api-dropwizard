@@ -7,6 +7,9 @@ import com.comarch.danielkurosz.dao.MongoDatabaseConfigurator;
 import com.comarch.danielkurosz.exceptions.AppExceptionMapper;
 import com.comarch.danielkurosz.exceptions.ConstraintViolationExceptionMapper;
 import com.comarch.danielkurosz.health.RestCheck;
+import com.comarch.danielkurosz.job.ProviderJob;
+import com.comarch.danielkurosz.job.ProviderJobDetailFactory;
+import com.comarch.danielkurosz.job.ServiceJobFactory;
 import com.comarch.danielkurosz.resources.ClientsResource;
 import com.comarch.danielkurosz.service.ClientMapper;
 import com.comarch.danielkurosz.service.ClientsService;
@@ -23,22 +26,34 @@ import io.dropwizard.jersey.errors.LoggingExceptionMapper;
 import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper;
 import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.setup.Environment;
+import org.mongodb.morphia.Datastore;
+import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
+
+import static com.comarch.danielkurosz.job.ProviderTriggerBuilder.newProviderTrigger;
+import static org.quartz.CronScheduleBuilder.cronSchedule;
+
+
 
 public class ClientsServiceApp extends Application<ClientServiceConfiguration> {
 
     private static ClientsService clientsService;
+    private Datastore datastore;
+    private Scheduler scheduler;
+    private static final String QUARTZ_PROPERTIES = "/quartz.properties";
+
 
     public static void main(String[] args) throws Exception {
-
-
-
         new ClientsServiceApp().run(args);
     }
 
     @Override
-    public void run(ClientServiceConfiguration configuration, Environment environment) {
+    public void run(ClientServiceConfiguration configuration, Environment environment) throws SchedulerException {
         ClientMapper clientMapper = new ClientMapper();
-        MongoClientDAO mongoClientDAO = MongoDatabaseConfigurator.configureMongo();
+
+        datastore = MongoDatabaseConfigurator.configure();
+        MongoClientDAO mongoClientDAO = new MongoClientDAO(datastore);
+
         SortingConverter sortingConverter = new SortingConverter();
 
         ((DefaultServerFactory)configuration.getServerFactory()).setRegisterDefaultExceptionMappers(false);
@@ -68,5 +83,26 @@ public class ClientsServiceApp extends Application<ClientServiceConfiguration> {
 
         environment.healthChecks().register("template", new RestCheck(configuration.getVersion()));
 
+
+        // create scheduler with default params
+        scheduler = new StdSchedulerFactory().getScheduler();
+        ServiceJobFactory serviceJobFactory = new ServiceJobFactory(datastore);
+        scheduler.setJobFactory(serviceJobFactory);
+        configureBirthdayProviderTrigger(scheduler,"",new MongoClientDAO(datastore));
+        scheduler.start();
+
+    }
+
+
+    private static void configureBirthdayProviderTrigger(Scheduler scheduler, String cron, MongoClientDAO dao) throws SchedulerException {
+
+        JobDetail job = ProviderJobDetailFactory.createProviderJobDetail("operator ID");
+
+        Trigger trigger = newProviderTrigger("operatorID")
+                .startNow()
+                .withSchedule(cronSchedule("34 * * ? * * *"))
+                .forJob(job)
+                .build();
+        scheduler.scheduleJob(job, trigger);
     }
 }

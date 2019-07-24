@@ -3,6 +3,7 @@ package com.comarch.danielkurosz.service;
 import com.comarch.danielkurosz.data.ClientEntity;
 import com.comarch.danielkurosz.dto.ClientDTO;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,12 +12,16 @@ public class ClientMapper {
 
     ClientDTO mapToClientDTO(ClientEntity clientEntity) {
 
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        String creationDate = dateFormat.format(clientEntity.getCreationDate());
+
         return new ClientDTO.ClientDTOBuilder().
                 id(clientEntity.getId().toString()).
                 email(clientEntity.getEmail()).
                 firstName(clientEntity.getFirstName()).
                 lastName(clientEntity.getLastName()).
-                creationDate(clientEntity.getCreationDate()).build();
+                creationDate(creationDate).build();
     }
 
     ClientEntity mapToClientEntity(ClientDTO clientDTO) {
