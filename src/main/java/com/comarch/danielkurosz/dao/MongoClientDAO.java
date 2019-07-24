@@ -36,7 +36,8 @@ public class MongoClientDAO implements ClientDAO {
         UpdateOperations<ClientEntity> operation = datastore.createUpdateOperations(ClientEntity.class).
                 set("firstName", clientEntity.getFirstName()).
                 set("lastName", clientEntity.getLastName()).
-                set("email", clientEntity.getEmail());
+                set("email", clientEntity.getEmail()).
+                set("birthday", clientEntity.getBirthday());
 
         datastore.update(query, operation);
 
@@ -65,7 +66,7 @@ public class MongoClientDAO implements ClientDAO {
     public List<ClientEntity> get(ClientEntity clientEntity, HashMap<String, String> sorts, int limit, int offset) {
 
         //because for Morphia limit = 0 means 'return everything'
-        if(limit==0){
+        if (limit == 0) {
             return new LinkedList<>();
         }
 

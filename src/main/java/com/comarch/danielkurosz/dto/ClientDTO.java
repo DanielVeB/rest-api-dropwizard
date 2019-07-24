@@ -8,7 +8,6 @@ import lombok.Setter;
 import javax.validation.constraints.NotNull;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -25,7 +24,8 @@ public class ClientDTO {
     @Email
     private String email;
 
-    private LocalDate dateOfBirthday;
+    @Setter(AccessLevel.NONE)
+    private String birthday;
 
     @Setter(AccessLevel.NONE)
     private String creationDate;
@@ -43,7 +43,7 @@ public class ClientDTO {
         this.firstName = clientDTOBuilder.firstName;
         this.lastName = clientDTOBuilder.lastName;
         this.email = clientDTOBuilder.email;
-        this.dateOfBirthday = clientDTOBuilder.dateOfBirthday;
+        this.birthday = clientDTOBuilder.birthday;
         this.creationDate = clientDTOBuilder.creationDate;
     }
 
@@ -53,7 +53,7 @@ public class ClientDTO {
         private String lastName;
         private String email;
         private String creationDate;
-        private LocalDate dateOfBirthday;
+        private String birthday;
 
         public ClientDTOBuilder() {
 
@@ -78,8 +78,9 @@ public class ClientDTO {
             this.email = email;
             return this;
         }
-        public ClientDTOBuilder dateOfBirthday(LocalDate dateOfBirthday) {
-            this.dateOfBirthday = dateOfBirthday;
+
+        public ClientDTOBuilder birthday(String birthday) {
+            this.birthday = birthday;
             return this;
         }
 
@@ -99,6 +100,7 @@ public class ClientDTO {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         this.creationDate = dateFormat.format(creationDate);
     }
+
 
     public void setTags(List<UserTagDTO> tags) {
         this.tags = tags;

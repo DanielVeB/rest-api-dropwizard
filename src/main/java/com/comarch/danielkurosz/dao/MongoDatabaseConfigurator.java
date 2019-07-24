@@ -15,4 +15,13 @@ public class MongoDatabaseConfigurator {
         datastore.ensureIndexes();
         return new MongoClientDAO(datastore);
     }
+
+    public static Datastore configure(){
+        Datastore datastore;
+        Morphia morphia = new Morphia();
+        morphia.map(ClientEntity.class);
+        datastore = morphia.createDatastore(new MongoClient(), "dropwizard");
+        datastore.ensureIndexes();
+        return datastore;
+    }
 }

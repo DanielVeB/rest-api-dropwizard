@@ -2,9 +2,9 @@ package com.comarch.danielkurosz.data;
 
 import org.mongodb.morphia.annotations.*;
 
-import javax.validation.constraints.NotNull;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
@@ -18,7 +18,7 @@ public class ClientEntity {
     private String firstName;
     private String lastName;
     private Date creationDate;
-
+    private LocalDate birthday;
 
     public ClientEntity() {
     }
@@ -31,6 +31,7 @@ public class ClientEntity {
         this.email = clientEntityBuilder.email;
         this.creationDate = clientEntityBuilder.creationDate;
         this.id = clientEntityBuilder.id;
+        this.birthday = clientEntityBuilder.birthday;
     }
 
     public static class ClientEntityBuilder {
@@ -39,6 +40,7 @@ public class ClientEntity {
 
         private String email;
         private Date creationDate;
+        private LocalDate birthday;
         private UUID id;
 
         public ClientEntityBuilder() {
@@ -62,6 +64,11 @@ public class ClientEntity {
 
         public ClientEntityBuilder creationDate(Date creationDate) {
             this.creationDate = creationDate;
+            return this;
+        }
+
+        public ClientEntityBuilder birthday(LocalDate birthday) {
+            this.birthday = birthday;
             return this;
         }
 
@@ -110,9 +117,16 @@ public class ClientEntity {
         this.lastName = lastName;
     }
 
-    public String getCreationDate() {
-        if (this.creationDate == null) return null;
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        return dateFormat.format(this.creationDate);
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public LocalDate getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(LocalDate birthday) {
+        this.birthday = birthday;
     }
 }
