@@ -1,5 +1,8 @@
 package com.comarch.danielkurosz.job;
 
+import com.comarch.danielkurosz.clients.TagsClient;
+import com.comarch.danielkurosz.job.birthday.BirthdayProviderJob;
+import com.comarch.danielkurosz.job.zodiac.ZodiacTagProviderJob;
 import org.mongodb.morphia.Datastore;
 import org.quartz.Job;
 import org.quartz.Scheduler;
@@ -14,13 +17,19 @@ public class ServiceJobFactory extends PropertySettingJobFactory {
 
     private Map<Class, JobModifier> jobModifiers;
 
-    public ServiceJobFactory(Datastore datastore){
+    public ServiceJobFactory(Datastore datastore, TagsClient client){
         jobModifiers = new HashMap<>();
 
-        jobModifiers.put(ProviderJob.class, (Job job)->{
-            ProviderJob providerJob = (ProviderJob) job;
+        jobModifiers.put(BirthdayProviderJob.class, (Job job)->{
+            BirthdayProviderJob providerJob = (BirthdayProviderJob) job;
             providerJob.setDatastore(datastore);
         });
+        jobModifiers.put(ZodiacTagProviderJob.class, (Job job)->{
+            ZodiacTagProviderJob providerJob = (ZodiacTagProviderJob) job;
+            providerJob.setClient(client);
+            providerJob.setDatastore(datastore);
+        });
+
     }
 
     @Override

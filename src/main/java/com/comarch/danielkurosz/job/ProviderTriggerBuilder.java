@@ -6,7 +6,7 @@ import org.quartz.TriggerBuilder;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 public class ProviderTriggerBuilder {
-    private static final String TRIGGER_GROUP = "cleanerTriggers";
+    private static final String TRIGGER_GROUP = "providerTriggers";
 
     public static TriggerBuilder<Trigger> newProviderTrigger(String name) {
         return newTrigger()

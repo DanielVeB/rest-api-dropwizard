@@ -2,17 +2,16 @@ package com.comarch.danielkurosz.logic.impl;
 
 import com.comarch.danielkurosz.dao.MongoClientDAO;
 import com.comarch.danielkurosz.data.ClientEntity;
-import com.comarch.danielkurosz.logic.IBirthdayProviderLogic;
+import com.comarch.danielkurosz.logic.IProviderLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class BirthdayProviderLogicImpl implements IBirthdayProviderLogic {
+public class BirthdayProviderLogicImpl implements IProviderLogic {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BirthdayProviderLogicImpl.class);
 
@@ -23,8 +22,8 @@ public class BirthdayProviderLogicImpl implements IBirthdayProviderLogic {
     }
 
     @Override
-    public void provide(String operatorId, Date now) {
-        LOGGER.info("Start provide job with operator id {}", operatorId);
+    public void provide() {
+        LOGGER.info("Start birthday job");
 
         List<ClientEntity> clientEntities;
         int i = 0;
