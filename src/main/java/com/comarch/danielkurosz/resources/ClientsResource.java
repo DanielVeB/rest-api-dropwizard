@@ -49,12 +49,12 @@ public class ClientsResource {
     @Timed
     @Produces(MediaType.APPLICATION_JSON)
     public Response read(@Auth AuthUser authUser,
-                               @QueryParam("firstName") String firstName,
-                               @QueryParam("lastName") String lastName,
-                               @QueryParam("email") String email,
-                               @QueryParam("sortBy") String sortBy,
-                               @QueryParam("limit") @Min(0) @DefaultValue("10") int limit,
-                               @QueryParam("offset") @Min(0) @DefaultValue("0") int offset) throws AppException {
+                         @QueryParam("firstName") String firstName,
+                         @QueryParam("lastName") String lastName,
+                         @QueryParam("email") String email,
+                         @QueryParam("sortBy") String sortBy,
+                         @QueryParam("limit") @Min(0) @DefaultValue("10") int limit,
+                         @QueryParam("offset") @Min(0) @DefaultValue("0") int offset) throws AppException {
         LOGGER.info("get clients");
 
         ClientDTO clientDTO = new ClientDTO.ClientDTOBuilder().firstName(firstName).

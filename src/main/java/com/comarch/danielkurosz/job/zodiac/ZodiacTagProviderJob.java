@@ -1,7 +1,6 @@
 package com.comarch.danielkurosz.job.zodiac;
 
 import com.comarch.danielkurosz.clients.TagsClient;
-import com.comarch.danielkurosz.dao.MongoClientDAO;
 import com.comarch.danielkurosz.job.IProviderJobLogic;
 import org.mongodb.morphia.Datastore;
 import org.quartz.Job;

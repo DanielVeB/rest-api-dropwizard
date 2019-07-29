@@ -8,8 +8,8 @@ import com.comarch.danielkurosz.exceptions.AppExceptionMapper;
 import com.comarch.danielkurosz.exceptions.ConstraintViolationExceptionMapper;
 import com.comarch.danielkurosz.health.RestCheck;
 import com.comarch.danielkurosz.job.ProviderJobDetailFactory;
-import com.comarch.danielkurosz.job.birthday.BirthdayProviderJobDetailFactory;
 import com.comarch.danielkurosz.job.ServiceJobFactory;
+import com.comarch.danielkurosz.job.birthday.BirthdayProviderJobDetailFactory;
 import com.comarch.danielkurosz.job.zodiac.ZodiacTagProviderJobDetailFactory;
 import com.comarch.danielkurosz.resources.ClientsResource;
 import com.comarch.danielkurosz.service.ClientMapper;
@@ -17,7 +17,6 @@ import com.comarch.danielkurosz.service.ClientsService;
 import com.comarch.danielkurosz.service.SortingConverter;
 import feign.Feign;
 import feign.auth.BasicAuthRequestInterceptor;
-import feign.gson.GsonCodec;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import io.dropwizard.Application;
@@ -91,7 +90,7 @@ public class ClientsServiceApp extends Application<ClientServiceConfiguration> {
 
         // create scheduler with default params
         scheduler = new StdSchedulerFactory().getScheduler();
-        ServiceJobFactory serviceJobFactory = new ServiceJobFactory(datastore,tagsClient);
+        ServiceJobFactory serviceJobFactory = new ServiceJobFactory(datastore, tagsClient);
         scheduler.setJobFactory(serviceJobFactory);
         configureBirthdayProviderTrigger(scheduler, "");
         configureZodiacTagProviderTrigger(scheduler, "");
@@ -113,7 +112,8 @@ public class ClientsServiceApp extends Application<ClientServiceConfiguration> {
 
         scheduler.scheduleJob(job, trigger);
     }
-    private static void configureZodiacTagProviderTrigger(Scheduler scheduler, String cron) throws SchedulerException{
+
+    private static void configureZodiacTagProviderTrigger(Scheduler scheduler, String cron) throws SchedulerException {
         ProviderJobDetailFactory factory = new ZodiacTagProviderJobDetailFactory();
         JobDetail job = factory.createProviderJobDetail("operator Id");
 
@@ -123,6 +123,6 @@ public class ClientsServiceApp extends Application<ClientServiceConfiguration> {
                 .forJob(job)
                 .build();
 
-        scheduler.scheduleJob(job,trigger);
+        scheduler.scheduleJob(job, trigger);
     }
 }
