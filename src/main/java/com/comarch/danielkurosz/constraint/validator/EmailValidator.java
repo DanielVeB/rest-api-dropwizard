@@ -1,7 +1,6 @@
 package com.comarch.danielkurosz.constraint.validator;
 
 import com.comarch.danielkurosz.constraint.Email;
-import org.hibernate.validator.internal.util.logging.Log;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -25,7 +24,7 @@ public class EmailValidator implements ConstraintValidator<Email, String> {
 
     @Override
     public boolean isValid(String object, ConstraintValidatorContext context) {
-        if( object == null || (!invalidCharacter.matcher(object).find())){
+        if (object == null || (!invalidCharacter.matcher(object).find())) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate("Wrong email").addConstraintViolation();
             return false;

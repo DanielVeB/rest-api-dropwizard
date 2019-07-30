@@ -1,23 +1,23 @@
 package com.comarch.danielkurosz.clients;
 
-import com.comarch.danielkurosz.dto.UserTagDTO;
+import com.comarch.danielkurosz.dto.ClientTagDTO;
 import feign.*;
 
-import java.util.HashMap;
 import java.util.List;
 
-@Headers("Accept: application/json")
 public interface TagsClient {
 
     @RequestLine("POST tags/client={client_id}")
     Response create(@Param("client_id") String clientId);
 
-    @RequestLine("GET tags/clients?client_id={client_id}")
-    HashMap<String, List<UserTagDTO>> getTags(@Param("client_id") List<String> clientsId);
-
-    @RequestLine("PUT tags/client={client_id}")
+    @RequestLine("PUT tags/client")
     @Headers("Content-Type: application/json")
-    @Body("%7B\"tag_id\": \"{tag_id}\", \"tag_value\": \"{tag_value}\"%7D")
-    void addZodiac(@Param("client_id")String clientId, @Param("tag_id") String tagId, @Param("tag_value") String tagValue);
+    void update(ClientTagDTO clientTagDTO);
+
+    @RequestLine("GET tags/clients?client_id={client_id}")
+    List<ClientTagDTO> getTags(@Param("client_id") List<String> clientsId);
+
+    @RequestLine("GET tags/clients/id?tag_id!={withoutTags}&tag_id={withTags}")
+    List<String> getClientsId(@Param("withoutTags")List<String>withoutTags, @Param("withTags") List<String> withTags);
 
 }
