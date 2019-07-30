@@ -30,7 +30,7 @@ public class ClientDTO {
     @Setter(AccessLevel.NONE)
     private String creationDate;
 
-    private List<UserTagDTO> tags;
+    private List<Tag> tags;
 
     public ClientDTO() {
     }
@@ -102,12 +102,12 @@ public class ClientDTO {
     }
 
 
-    public void setTags(List<UserTagDTO> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags = tags;
 
     }
 
-    public List<UserTagDTO> getTags() {
+    public List<Tag> getTags() {
         return tags;
     }
 }

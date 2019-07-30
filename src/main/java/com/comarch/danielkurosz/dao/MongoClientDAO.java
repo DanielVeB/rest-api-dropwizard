@@ -73,6 +73,7 @@ public class MongoClientDAO implements ClientDAO {
 
         Query<ClientEntity> query = this.datastore.createQuery(ClientEntity.class);
 
+        query = applyToQuery(query, "id",clientEntity.getId());
         query = applyToQuery(query, "firstName", clientEntity.getFirstName());
         query = applyToQuery(query, "lastName", clientEntity.getLastName());
         query = applyToQuery(query, "email", clientEntity.getEmail());
