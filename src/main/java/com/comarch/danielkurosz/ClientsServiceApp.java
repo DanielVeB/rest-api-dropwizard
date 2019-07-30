@@ -63,8 +63,7 @@ public class ClientsServiceApp extends Application<ClientServiceConfiguration> {
         // Register custom mapper
         environment.jersey().register(new ConstraintViolationExceptionMapper());
         // Restore Dropwizard's exception mappers
-        environment.jersey().register(new LoggingExceptionMapper<Throwable>() {
-        });
+        environment.jersey().register(new LoggingExceptionMapper<Throwable>() {});
         environment.jersey().register(new JsonProcessingExceptionMapper(true));
         environment.jersey().register(new EarlyEofExceptionMapper());
 
@@ -106,7 +105,7 @@ public class ClientsServiceApp extends Application<ClientServiceConfiguration> {
 
         Trigger trigger = newProviderTrigger("operatorID")
                 .startNow()
-                .withSchedule(cronSchedule("0/4 * * ? * * *"))
+                .withSchedule(cronSchedule("0 */1 * ? * * *"))
                 .forJob(job)
                 .build();
 
@@ -119,7 +118,7 @@ public class ClientsServiceApp extends Application<ClientServiceConfiguration> {
 
         Trigger trigger = newProviderTrigger("operatorId")
                 .startNow()
-                .withSchedule(cronSchedule("0/7 * * ? * * *"))
+                .withSchedule(cronSchedule("0 */5 * ? * * *"))
                 .forJob(job)
                 .build();
 
