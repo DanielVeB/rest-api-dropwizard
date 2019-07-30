@@ -4,7 +4,8 @@ import com.comarch.danielkurosz.clients.TagsClient;
 import com.comarch.danielkurosz.dao.MongoClientDAO;
 import com.comarch.danielkurosz.data.ClientEntity;
 import com.comarch.danielkurosz.dto.ClientDTO;
-import com.comarch.danielkurosz.dto.UserTagDTO;
+import com.comarch.danielkurosz.dto.ClientTagDTO;
+import com.comarch.danielkurosz.dto.Tag;
 import com.comarch.danielkurosz.exceptions.AppException;
 import com.comarch.danielkurosz.exceptions.DuplicateEmailException;
 import com.comarch.danielkurosz.exceptions.InvalidUUIDException;
@@ -49,12 +50,16 @@ public class ClientsService {
             clientsId.add(clientDTO_.getId());
         }
 
-
 //        connect with tag service to get tags for all passed id
-        HashMap<String, List<UserTagDTO>> tags = this.tagsClient.getTags(clientsId);
+        List<ClientTagDTO> tags = this.tagsClient.getTags(clientsId);
 
+        HashMap<String, List<Tag>> tagsMap = new HashMap<>();
+
+        for(ClientTagDTO clientTagDTO : tags){
+            tagsMap.put(clientTagDTO.getClientId(), clientTagDTO.getTags());
+        }
         for (ClientDTO DTOclient : clientsDTO) {
-            DTOclient.setTags(tags.get(DTOclient.getId()));
+            DTOclient.setTags(tagsMap.get(DTOclient.getId()));
         }
 
         return clientsDTO;
@@ -76,6 +81,7 @@ public class ClientsService {
 
         ClientDTO returnedClient = clientMapper.mapToClientDTO(returnClientEntity);
         this.tagsClient.create(returnedClient.getId());
+
         return returnedClient;
     }
 
