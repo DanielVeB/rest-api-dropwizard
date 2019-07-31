@@ -1,4 +1,4 @@
-package com.comarch.danielkurosz.dto;
+package com.comarch.danielkurosz.clients;
 
 public class Tag {
 

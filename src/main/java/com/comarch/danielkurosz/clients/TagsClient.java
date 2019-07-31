@@ -7,8 +7,9 @@ import java.util.List;
 
 public interface TagsClient {
 
-    @RequestLine("POST tags/client={client_id}")
-    Response create(@Param("client_id") String clientId);
+    @RequestLine("POST tags/client")
+    @Headers("Content-Type: application/json")
+    void create(ClientTagDTO clientTagDTO);
 
     @RequestLine("PUT tags/client")
     @Headers("Content-Type: application/json")
