@@ -1,4 +1,8 @@
-package com.comarch.danielkurosz.exceptions;
+package com.comarch.danielkurosz.exceptions.mapper;
+
+import com.comarch.danielkurosz.exceptions.AppException;
+import com.comarch.danielkurosz.exceptions.EmptyFieldException;
+import com.comarch.danielkurosz.exceptions.InvalidEmailException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -19,13 +23,17 @@ public class ConstraintViolationExceptionMapper implements
         List<String> messages = new LinkedList<>();
         for (ConstraintViolation<?> constraintViolation : exception.getConstraintViolations()) {
             messages.add(constraintViolation.getMessage());
+            //because EmptyFieldException has main priority
             if (constraintViolation.getMessage().equals("may not be null")) {
                 return appExceptionMapper.toResponse(new EmptyFieldException());
             }
         }
+        // if EmptyFieldException wasn't found, throw other exception
         if (messages.get(0).equals("Wrong email")) {
             return appExceptionMapper.toResponse(new InvalidEmailException());
         }
-        return null;
+        else{
+            return appExceptionMapper.toResponse(new AppException(400,"","",""));
+        }
     }
 }

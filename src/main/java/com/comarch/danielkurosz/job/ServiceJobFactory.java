@@ -24,6 +24,7 @@ public class ServiceJobFactory extends PropertySettingJobFactory {
             BirthdayProviderJob providerJob = (BirthdayProviderJob) job;
             providerJob.setDatastore(datastore);
         });
+
         jobModifiers.put(ZodiacTagProviderJob.class, (Job job)->{
             ZodiacTagProviderJob providerJob = (ZodiacTagProviderJob) job;
             providerJob.setClient(client);
@@ -32,6 +33,7 @@ public class ServiceJobFactory extends PropertySettingJobFactory {
 
     }
 
+//    Called by the scheduler at the time of the trigger firing, in order to produce a Job instance on which to call execute.
     @Override
     public Job newJob(TriggerFiredBundle bundle, Scheduler scheduler) throws SchedulerException {
         Job job = super.newJob(bundle, scheduler);

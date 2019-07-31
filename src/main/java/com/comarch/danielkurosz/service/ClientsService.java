@@ -1,11 +1,11 @@
 package com.comarch.danielkurosz.service;
 
+import com.comarch.danielkurosz.clients.ClientTagDTO;
+import com.comarch.danielkurosz.clients.Tag;
 import com.comarch.danielkurosz.clients.TagsClient;
 import com.comarch.danielkurosz.dao.MongoClientDAO;
 import com.comarch.danielkurosz.data.ClientEntity;
 import com.comarch.danielkurosz.dto.ClientDTO;
-import com.comarch.danielkurosz.dto.ClientTagDTO;
-import com.comarch.danielkurosz.dto.Tag;
 import com.comarch.danielkurosz.exceptions.AppException;
 import com.comarch.danielkurosz.exceptions.DuplicateEmailException;
 import com.comarch.danielkurosz.exceptions.InvalidUUIDException;
@@ -80,7 +80,7 @@ public class ClientsService {
         }
 
         ClientDTO returnedClient = clientMapper.mapToClientDTO(returnClientEntity);
-        this.tagsClient.create(returnedClient.getId());
+        //this.tagsClient.create(returnedClient.getId());
 
         return returnedClient;
     }
