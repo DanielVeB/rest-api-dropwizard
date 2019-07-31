@@ -19,8 +19,12 @@ import static java.lang.annotation.ElementType.*;
 public @interface Email {
     String message() default "Email format incorrect";
 
+// an attribute groups that allows the specification of validation groups,
+// to which this constraint belongs(default to an empty array of type Class<?>.)
     Class<?>[] groups() default { };
 
+//an attribute payload that can be used by clients of the Bean Validation API to assign custom payload objects to a constraint.
+// This attribute is not used by the API itself
     Class<? extends Payload>[] payload() default { };
 
 }
