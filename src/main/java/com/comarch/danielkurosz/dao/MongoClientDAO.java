@@ -82,16 +82,12 @@ public class MongoClientDAO implements ClientDAO {
             Sort[] mongosorts = new Sort[sorts.size()];
             int i = 0;
             for (Map.Entry<String, String> sort : sorts.entrySet()) {
-                if (sort.getValue().equals("asc")) {
-                    mongosorts[i] = Sort.ascending(sort.getKey());
-                }
-                if (sort.getValue().equals("desc")) {
-                    mongosorts[i] = Sort.descending(sort.getKey());
-                }
+                mongosorts[i]=setSortingParameter(sort.getKey(),sort.getValue());
                 i++;
             }
             query.order(mongosorts);
         }
+
         return query.asList(new FindOptions().limit(limit).skip(offset));
     }
 
@@ -107,5 +103,16 @@ public class MongoClientDAO implements ClientDAO {
             return update.set(fieldName,fieldValue);
         }
         return update;
+    }
+
+    private Sort setSortingParameter(String key, String value){
+        if(value.equals("asc")){
+            return Sort.ascending(key);
+        }
+        if(value.equals("desc")){
+            return Sort.descending(key);
+        }
+        // never happens
+        else return null;
     }
 }
