@@ -1,6 +1,5 @@
 package com.comarch.danielkurosz.clients;
 
-import com.comarch.danielkurosz.dto.ClientTagDTO;
 import feign.*;
 
 import java.util.List;
