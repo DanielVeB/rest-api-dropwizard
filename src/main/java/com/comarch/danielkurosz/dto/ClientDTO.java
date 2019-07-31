@@ -1,5 +1,6 @@
 package com.comarch.danielkurosz.dto;
 
+import com.comarch.danielkurosz.clients.Tag;
 import com.comarch.danielkurosz.constraint.Email;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -1,6 +1,7 @@
-package com.comarch.danielkurosz.exceptions;
+package com.comarch.danielkurosz.exceptions.mapper;
 
 import com.comarch.danielkurosz.dto.ExceptionDTO;
+import com.comarch.danielkurosz.exceptions.AppException;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;

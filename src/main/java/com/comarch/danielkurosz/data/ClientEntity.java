@@ -115,7 +115,6 @@ public class ClientEntity {
         this.lastName = lastName;
     }
 
-
     public Date getCreationDate() {
         return creationDate;
     }
