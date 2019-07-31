@@ -1,10 +1,10 @@
 package com.comarch.danielkurosz.logic.impl;
 
+import com.comarch.danielkurosz.clients.ClientTagDTO;
+import com.comarch.danielkurosz.clients.Tag;
 import com.comarch.danielkurosz.clients.TagsClient;
 import com.comarch.danielkurosz.dao.MongoClientDAO;
 import com.comarch.danielkurosz.data.ClientEntity;
-import com.comarch.danielkurosz.dto.ClientTagDTO;
-import com.comarch.danielkurosz.dto.Tag;
 import com.comarch.danielkurosz.logic.IProviderLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +12,13 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class ZodiacTagProviderLogicImpl implements IProviderLogic {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ZodiacTagProviderLogicImpl.class);
+    public static final String ZODIAC = "zodiac";
 
     private final TagsClient client;
     private final MongoClientDAO dao;
@@ -30,22 +32,32 @@ public class ZodiacTagProviderLogicImpl implements IProviderLogic {
     public void provide() {
         LOGGER.info("Start zodiac job");
 
-        List<String> clientsId = getClientsWithoutZodiacId();
-
-        for (String clientId : clientsId) {
-            LocalDate date = getBirthdayDate(clientId);
-            if (date != null) {
-                ClientTagDTO clientTag = new ClientTagDTO();
-                clientTag.setClientId(clientId);
-                updateClientByZodiacTag(clientTag,date);
-            }
-        }
+//        ClientTagDTO clientTagDTO = new ClientTagDTO();
+//        clientTagDTO.setClientId(UUID.randomUUID().toString());
+//        List<Tag> tags = new LinkedList<>();
+//        tags.add(new Tag("id1","v1"));
+//        tags.add(new Tag("id1","v2"));
+//        tags.add(new Tag("id2","v1"));
+//        tags.add(new Tag("id2","v1"));
+//        tags.add(new Tag("id3","v3"));
+//        clientTagDTO.setTags(tags);
+//        client.create(clientTagDTO);
+//        List<String> clientsId = getClientsWithoutZodiacId();
+//
+//        for (String clientId : clientsId) {
+//            LocalDate date = getBirthdayDate(clientId);
+//            if (date != null) {
+//                ClientTagDTO clientTag = new ClientTagDTO();
+//                clientTag.setClientId(clientId);
+//                updateClientByZodiacTag(clientTag,date);
+//            }
+//        }
 
     }
 
     private List<String> getClientsWithoutZodiacId() {
         List<String> withoutTag = new LinkedList<>();
-        withoutTag.add("zodiac");
+        withoutTag.add(ZODIAC);
         return client.getClientsId(withoutTag, null);
     }
 
@@ -59,9 +71,9 @@ public class ZodiacTagProviderLogicImpl implements IProviderLogic {
     }
 
     private void updateClientByZodiacTag(ClientTagDTO clientTagDTO, LocalDate birthdayDate) {
-        String zodiacValue = Zodiac.getZodiac(birthdayDate).value;
+        String zodiacValue = Objects.requireNonNull(Zodiac.getZodiac(birthdayDate)).value;
         List<Tag> tags = new LinkedList<>();
-        tags.add(new Tag("zodiac",zodiacValue));
+        tags.add(new Tag(ZODIAC,zodiacValue));
         clientTagDTO.setTags(tags);
         client.update(clientTagDTO);
     }

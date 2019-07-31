@@ -2,10 +2,12 @@ package com.comarch.danielkurosz;
 
 import com.comarch.danielkurosz.auth.AuthUser;
 import com.comarch.danielkurosz.clients.TagsClient;
+import com.comarch.danielkurosz.config.ClientServiceConfiguration;
+import com.comarch.danielkurosz.config.TagServiceConfiguration;
 import com.comarch.danielkurosz.dao.MongoClientDAO;
 import com.comarch.danielkurosz.dao.MongoDatabaseConfigurator;
-import com.comarch.danielkurosz.exceptions.AppExceptionMapper;
-import com.comarch.danielkurosz.exceptions.ConstraintViolationExceptionMapper;
+import com.comarch.danielkurosz.exceptions.mapper.AppExceptionMapper;
+import com.comarch.danielkurosz.exceptions.mapper.ConstraintViolationExceptionMapper;
 import com.comarch.danielkurosz.health.RestCheck;
 import com.comarch.danielkurosz.job.ProviderJobDetailFactory;
 import com.comarch.danielkurosz.job.ServiceJobFactory;
@@ -40,11 +42,7 @@ import static org.quartz.CronScheduleBuilder.cronSchedule;
 
 public class ClientsServiceApp extends Application<ClientServiceConfiguration> {
 
-    private static ClientsService clientsService;
-    private Datastore datastore;
-    private Scheduler scheduler;
     private static final String QUARTZ_PROPERTIES = "/quartz.properties";
-
 
     public static void main(String[] args) throws Exception {
         new ClientsServiceApp().run(args);
@@ -52,9 +50,12 @@ public class ClientsServiceApp extends Application<ClientServiceConfiguration> {
 
     @Override
     public void run(ClientServiceConfiguration configuration, Environment environment) throws SchedulerException {
+
+        TagServiceConfiguration tagServiceConfiguration = configuration.getTagService();
+
         ClientMapper clientMapper = new ClientMapper();
 
-        datastore = MongoDatabaseConfigurator.configure();
+        Datastore datastore = MongoDatabaseConfigurator.configure();
         MongoClientDAO mongoClientDAO = new MongoClientDAO(datastore);
 
         SortingConverter sortingConverter = new SortingConverter();
@@ -70,10 +71,10 @@ public class ClientsServiceApp extends Application<ClientServiceConfiguration> {
         TagsClient tagsClient = Feign.builder()
                 .decoder(new GsonDecoder())
                 .encoder(new GsonEncoder())
-                .requestInterceptor(new BasicAuthRequestInterceptor(configuration.getTagServiceLogin(), configuration.getTagServicePassword()))
-                .target(TagsClient.class, "http://localhost:9002");
+                .requestInterceptor(new BasicAuthRequestInterceptor(tagServiceConfiguration.getLogin(), tagServiceConfiguration.getPassword()))
+                .target(TagsClient.class, tagServiceConfiguration.getUrl());
 
-        clientsService = new ClientsService(mongoClientDAO, clientMapper, sortingConverter, tagsClient);
+        ClientsService clientsService = new ClientsService(mongoClientDAO, clientMapper, sortingConverter, tagsClient);
 
         final ClientsResource clientsResource = new ClientsResource(clientsService);
         environment.jersey().register(clientsResource);
@@ -88,37 +89,33 @@ public class ClientsServiceApp extends Application<ClientServiceConfiguration> {
 
 
         // create scheduler with default params
-        scheduler = new StdSchedulerFactory().getScheduler();
+        Scheduler scheduler = new StdSchedulerFactory().getScheduler();
         ServiceJobFactory serviceJobFactory = new ServiceJobFactory(datastore, tagsClient);
         scheduler.setJobFactory(serviceJobFactory);
-        configureBirthdayProviderTrigger(scheduler, "");
-        configureZodiacTagProviderTrigger(scheduler, "");
+        configureBirthdayProviderTrigger(scheduler, configuration.getBirthdayJob().getCron(),configuration.getBirthdayJob().getName());
+        configureZodiacTagProviderTrigger(scheduler, configuration.getZodiacJob().getCron(),configuration.getZodiacJob().getName());
         scheduler.start();
 
     }
 
-
-    private static void configureBirthdayProviderTrigger(Scheduler scheduler, String cron) throws SchedulerException {
+    private static void configureBirthdayProviderTrigger(Scheduler scheduler, String cron,String name) throws SchedulerException {
 
         ProviderJobDetailFactory factory = new BirthdayProviderJobDetailFactory();
-        JobDetail job = factory.createProviderJobDetail("operator ID");
-
-        Trigger trigger = newProviderTrigger("operatorID")
-                .startNow()
-                .withSchedule(cronSchedule("0 */1 * ? * * *"))
-                .forJob(job)
-                .build();
-
-        scheduler.scheduleJob(job, trigger);
+        configureTrigger(factory,scheduler,cron,name);
     }
 
-    private static void configureZodiacTagProviderTrigger(Scheduler scheduler, String cron) throws SchedulerException {
+    private static void configureZodiacTagProviderTrigger(Scheduler scheduler, String cron,String name) throws SchedulerException {
         ProviderJobDetailFactory factory = new ZodiacTagProviderJobDetailFactory();
-        JobDetail job = factory.createProviderJobDetail("operator Id");
+        configureTrigger(factory,scheduler,cron,name);
 
-        Trigger trigger = newProviderTrigger("operatorId")
+    }
+
+    private static void configureTrigger(ProviderJobDetailFactory factory,Scheduler scheduler, String cron, String name) throws SchedulerException {
+        JobDetail job = factory.createProviderJobDetail(name);
+
+        Trigger trigger = newProviderTrigger(name)
                 .startNow()
-                .withSchedule(cronSchedule("0 */5 * ? * * *"))
+                .withSchedule(cronSchedule(cron))
                 .forJob(job)
                 .build();
 
