@@ -1,5 +1,6 @@
 package com.comarch.danielkurosz.exceptions;
 
+import com.comarch.danielkurosz.exceptions.mapper.AppExceptionMapper;
 import org.junit.Assert;
 import org.junit.Test;
 

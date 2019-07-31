@@ -1,6 +1,5 @@
 version: 0.0.1
 
-# Change default server ports
 server:
   applicationConnectors:
     - type: http
@@ -12,5 +11,18 @@ server:
 login: daniel
 password: password1
 
-tagServiceLogin: h2a921as%21
-tagServicePassword: 7as12$1as0431hjd
+tagService:
+  connector:
+    type: http
+    address: 127.0.0.1
+    port: 9002
+  login: h2a921as%21
+  password: 7as12$1as0431hjd
+
+birthdayJob:
+  name: birthdayTrigger
+  cron: 0 */5 * ? * * *
+
+zodiacJob:
+  name: zodiacTrigger
+  cron: 0/10 * * ? * * *
