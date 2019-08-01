@@ -2,6 +2,7 @@ package com.comarch.danielkurosz.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import com.comarch.danielkurosz.auth.AuthUser;
+import com.comarch.danielkurosz.clients.Tag;
 import com.comarch.danielkurosz.dto.ClientDTO;
 import com.comarch.danielkurosz.exceptions.AppException;
 import com.comarch.danielkurosz.service.ClientsService;
@@ -28,11 +29,6 @@ public class ClientsResource {
         this.clientsService = clientsService;
     }
 
-    //    4 methods
-    //    C create - add new user
-    //    R read - get user from database
-    //    U update - update user by id
-    //    D delete  - delete user by id
 
     @POST
     @Timed
@@ -48,13 +44,13 @@ public class ClientsResource {
     @GET
     @Timed
     @Produces(MediaType.APPLICATION_JSON)
-    public Response read(@Auth AuthUser authUser,
-                         @QueryParam("firstName") String firstName,
-                         @QueryParam("lastName") String lastName,
-                         @QueryParam("email") String email,
-                         @QueryParam("sortBy") String sortBy,
-                         @QueryParam("limit") @Min(0) @DefaultValue("10") int limit,
-                         @QueryParam("offset") @Min(0) @DefaultValue("0") int offset) throws AppException {
+    public Response getClients(@Auth AuthUser authUser,
+                               @QueryParam("firstName") String firstName,
+                               @QueryParam("lastName") String lastName,
+                               @QueryParam("email") String email,
+                               @QueryParam("sortBy") String sortBy,
+                               @QueryParam("limit") @Min(0) @DefaultValue("10") int limit,
+                               @QueryParam("offset") @Min(0) @DefaultValue("0") int offset) throws AppException {
         LOGGER.info("get clients");
 
         ClientDTO clientDTO = new ClientDTO.ClientDTOBuilder().firstName(firstName).
@@ -64,6 +60,23 @@ public class ClientsResource {
         List<ClientDTO> clientsDTO = clientsService.getClients(clientDTO, sortBy, limit, offset);
         return Response.ok(clientsDTO).build();
     }
+
+    @GET
+    @Timed
+    @Path("/client={id}/tags")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTagsForClient(@Auth AuthUser authUser,
+                                     @PathParam("id") String clientId,
+                                     @QueryParam("tag_id") String tagId,
+                                     @QueryParam("tag_value") String tagValue,
+                                     @QueryParam("limit") @Min(0) @DefaultValue("10") int limit,
+                                     @QueryParam("offset") @Min(0) @DefaultValue("0") int offset) {
+
+        LOGGER.info("get tags for client with id: " + clientId);
+        clientsService.getTagsForClient(clientId, new Tag(tagId, tagValue), limit, offset);
+        return null;
+    }
+
 
     @PUT
     @Timed

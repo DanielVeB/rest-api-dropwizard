@@ -1,6 +1,5 @@
 package com.comarch.danielkurosz.service;
 
-import com.comarch.danielkurosz.clients.ClientTagDTO;
 import com.comarch.danielkurosz.clients.Tag;
 import com.comarch.danielkurosz.clients.TagsClient;
 import com.comarch.danielkurosz.dao.MongoClientDAO;
@@ -44,25 +43,11 @@ public class ClientsService {
                 .map(clientE -> clientMapper.mapToClientDTO(clientE))
                 .collect(Collectors.toList());
 
-        List<String> clientsId = new LinkedList<>();
-
-        for (ClientDTO clientDTO_ : clientsDTO) {
-            clientsId.add(clientDTO_.getId());
-        }
-
-//        connect with tag service to get tags for all passed id
-        List<ClientTagDTO> tags = this.tagsClient.getTags(clientsId);
-
-        HashMap<String, List<Tag>> tagsMap = new HashMap<>();
-
-        for(ClientTagDTO clientTagDTO : tags){
-            tagsMap.put(clientTagDTO.getClientId(), clientTagDTO.getTags());
-        }
-        for (ClientDTO DTOclient : clientsDTO) {
-            DTOclient.setTags(tagsMap.get(DTOclient.getId()));
-        }
-
         return clientsDTO;
+    }
+
+    public List<Tag> getTagsForClient(String clientId, Tag tag, int limit, int offset){
+        return tagsClient.getTagsByClientId(clientId,tag.getTagId(),tag.getTagValue(),limit,offset);
     }
 
     public ClientDTO createClient(ClientDTO clientDTO) throws AppException {

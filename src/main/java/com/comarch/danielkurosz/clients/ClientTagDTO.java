@@ -1,20 +1,18 @@
 package com.comarch.danielkurosz.clients;
 
-import java.util.List;
-
 public class ClientTagDTO {
 
+    String clientId;
+    Tag tag;
 
-    private String clientId;
-    private List<Tag> tags;
+    public ClientTagDTO(String clientId, Tag tag) {
+        this.clientId = clientId;
+        this.tag = tag;
+    }
 
     public ClientTagDTO() {
     }
 
-    public ClientTagDTO(String clientId, List<Tag> tags) {
-        this.clientId = clientId;
-        this.tags = tags;
-    }
 
     public String getClientId() {
         return clientId;
@@ -24,11 +22,11 @@ public class ClientTagDTO {
         this.clientId = clientId;
     }
 
-    public List<Tag> getTags() {
-        return tags;
+    public Tag getTag() {
+        return tag;
     }
 
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
+    public void setTag(Tag tag) {
+        this.tag = tag;
     }
 }

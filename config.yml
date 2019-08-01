@@ -21,8 +21,8 @@ tagService:
 
 birthdayJob:
   name: birthdayTrigger
-  cron: 0 */5 * ? * * *
+  cron: 0/4 * * ? * * *
 
 zodiacJob:
   name: zodiacTrigger
-  cron: 0/10 * * ? * * *
+  cron: 0/5 * * ? * * *

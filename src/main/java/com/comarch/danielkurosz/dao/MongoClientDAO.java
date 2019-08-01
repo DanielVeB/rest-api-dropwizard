@@ -91,6 +91,14 @@ public class MongoClientDAO implements ClientDAO {
         return query.asList(new FindOptions().limit(limit).skip(offset));
     }
 
+    public List<ClientEntity> getIds(int limit, int offset){
+        Query<ClientEntity> query = this.datastore.createQuery(ClientEntity.class);
+
+        query.field("birthday").exists();
+        return query.asList(new FindOptions().limit(limit).skip(offset));
+
+    }
+
     private Query<ClientEntity> applyToQuery(Query<ClientEntity> query, String fieldName, Object fieldValue) {
         if (fieldValue != null) {
             return query.field(fieldName).equal(fieldValue);
