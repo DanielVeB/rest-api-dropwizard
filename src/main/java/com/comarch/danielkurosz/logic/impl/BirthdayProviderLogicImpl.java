@@ -44,10 +44,16 @@ public class BirthdayProviderLogicImpl implements IProviderLogic {
 
             int year = setDateField(date.getYear(), 18, 40);
             int month = Math.abs(setDateField(date.getMonthValue(), 1, 12));
-            int day = Math.abs(setDateField(date.getDayOfMonth(), 1, 31));
+            int maxDay = (month==1 || month==3 ||month==5 ||month==7 ||month==8 ||month==10 ||month==12) ? 31 : 30;
+            if(month ==2){
+                if(year%4==0)maxDay=29;
+                else maxDay=28;
+            }
+            int day = Math.abs(setDateField(date.getDayOfMonth(), 1, maxDay));
 
             LocalDate birthdayDate = LocalDate.of(year, Math.max(1, month), Math.max(1, day));
             clientEntity.setBirthday(birthdayDate);
+
             mongoClientDAO.update(clientEntity);
         }
 
