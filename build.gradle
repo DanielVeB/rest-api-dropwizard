@@ -4,6 +4,7 @@ import java.time.format.DateTimeFormatter
 
 plugins {
     id 'com.github.johnrengelman.shadow' version '1.2.4'
+    id 'war'
 }
 
 version '1.0-SNAPSHOT'
@@ -37,7 +38,12 @@ dependencies {
     compile group: 'io.github.openfeign', name: 'feign-slf4j', version: '10.2.3'
     compile group: 'io.github.openfeign', name: 'feign-okhttp', version: '10.2.3'
     compile group: 'io.github.openfeign', name: 'feign-gson', version: '10.2.3'
-    
+
+
+    // https://mvnrepository.com/artifact/org.springframework.data/spring-data-mongodb
+    compile group: 'org.springframework.data', name: 'spring-data-mongodb', version: '2.1.9.RELEASE'
+
+
     // https://mvnrepository.com/artifact/com.squareup.retrofit/retrofit
     compile group: 'com.squareup.retrofit', name: 'retrofit', version: '1.9.0'
     // https://mvnrepository.com/artifact/org.quartz-scheduler/quartz

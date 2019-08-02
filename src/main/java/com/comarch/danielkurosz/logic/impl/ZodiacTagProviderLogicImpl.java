@@ -6,17 +6,28 @@ import com.comarch.danielkurosz.clients.TagsClient;
 import com.comarch.danielkurosz.dao.MongoClientDAO;
 import com.comarch.danielkurosz.data.ClientEntity;
 import com.comarch.danielkurosz.logic.IProviderLogic;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.Sort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
 
 public class ZodiacTagProviderLogicImpl implements IProviderLogic {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ZodiacTagProviderLogicImpl.class);
     private static final String ZODIAC = "zodiac";
     private static final int LIMIT = 100;
+
+
+    // creationDate of client who was last updated
+    private static Date fromDate = Date.from(LocalDate.parse("January 2, 2010",DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH)).atStartOfDay(ZoneId.of("CET")).toInstant());
 
     private final TagsClient tagClient;
     private final MongoClientDAO dao;
@@ -28,58 +39,27 @@ public class ZodiacTagProviderLogicImpl implements IProviderLogic {
 
     @Override
     public void provide() {
-        LOGGER.info("Start zodiac job");
+        LOGGER.info("Start zodiac job for clients with creationDate greater than: " + fromDate);
 
-        Map<UUID, ClientEntity> map = new HashMap<>();
+        Query<ClientEntity> query = dao.getQuery();
 
-//        Get all clients who have birthday date from clients database
-//        TO DO!! Find better way, list of all clients can be too huge
-//        idea 1: Get only clients who were created in less than 10 minutes, but what with earlier created clients the zodiac tag has been deleted from
-        List<ClientEntity> allClients = getAllClientsWithBirthdayDate();
+        query.field("birthday").exists();
+        query.field("creationDate").greaterThan(fromDate);
+        query.order(Sort.ascending("creationDate"));
 
-        List<UUID> clientsIdWithZodiac = getClientsIdWithZodiac();
-
-        for (ClientEntity clientEntity : allClients) {
-            map.put(clientEntity.getId(), clientEntity);
-        }
-
-        for (UUID id : clientsIdWithZodiac) {
-            map.remove(id);
-        }
-
-        List<ClientEntity> clientsWithoutZodiac = new LinkedList<>(map.values());
-
-        for (ClientEntity entity : clientsWithoutZodiac) {
-            updateClientByZodiac(entity);
-        }
-
-    }
-
-    private List<ClientEntity> getAllClientsWithBirthdayDate() {
-
-        List<ClientEntity> allId = new LinkedList<>();
-        List<ClientEntity> ids;
-
-        int i = 0;
+        List<ClientEntity> lastCreatedClients;
+        int i =0;
         do {
-            ids = dao.getIds(LIMIT, i * LIMIT);
-            allId.addAll(ids);
+            lastCreatedClients = dao.getClients(query, LIMIT, i * LIMIT);
+            for (ClientEntity entity : lastCreatedClients) {
+                updateClientByZodiac(entity);
+                fromDate = entity.getCreationDate();
+            }
             i++;
-        } while (ids.size() != 0);
-        return allId;
+        }while (lastCreatedClients.size()!=0);
+
     }
 
-    private List<UUID> getClientsIdWithZodiac() {
-        List<UUID> allId = new LinkedList<>();
-        List<UUID> ids;
-        int i = 0;
-        do {
-            ids = tagClient.getClientsId(ZODIAC, null, LIMIT, i * LIMIT);
-            allId.addAll(ids);
-            i++;
-        } while (ids.size() != 0);
-        return allId;
-    }
 
     private void updateClientByZodiac(ClientEntity clientEntity) {
         if (clientEntity.getBirthday() != null) {

@@ -36,9 +36,9 @@ public class MongoClientDAO implements ClientDAO {
         UpdateOperations<ClientEntity> operation = datastore.createUpdateOperations(ClientEntity.class);
 
         operation = applyToUpdateQuery(operation, "firstName", clientEntity.getFirstName());
-        operation = applyToUpdateQuery(operation,"lastName", clientEntity.getLastName());
-        operation = applyToUpdateQuery(operation,"email", clientEntity.getEmail());
-        operation = applyToUpdateQuery(operation,"birthday", clientEntity.getBirthday());
+        operation = applyToUpdateQuery(operation, "lastName", clientEntity.getLastName());
+        operation = applyToUpdateQuery(operation, "email", clientEntity.getEmail());
+        operation = applyToUpdateQuery(operation, "birthday", clientEntity.getBirthday());
 
         datastore.update(query, operation);
 
@@ -73,7 +73,7 @@ public class MongoClientDAO implements ClientDAO {
 
         Query<ClientEntity> query = this.datastore.createQuery(ClientEntity.class);
 
-        query = applyToQuery(query, "id",clientEntity.getId());
+        query = applyToQuery(query, "id", clientEntity.getId());
         query = applyToQuery(query, "firstName", clientEntity.getFirstName());
         query = applyToQuery(query, "lastName", clientEntity.getLastName());
         query = applyToQuery(query, "email", clientEntity.getEmail());
@@ -82,7 +82,7 @@ public class MongoClientDAO implements ClientDAO {
             Sort[] mongosorts = new Sort[sorts.size()];
             int i = 0;
             for (Map.Entry<String, String> sort : sorts.entrySet()) {
-                mongosorts[i]=setSortingParameter(sort.getKey(),sort.getValue());
+                mongosorts[i] = setSortingParameter(sort.getKey(), sort.getValue());
                 i++;
             }
             query.order(mongosorts);
@@ -91,12 +91,12 @@ public class MongoClientDAO implements ClientDAO {
         return query.asList(new FindOptions().limit(limit).skip(offset));
     }
 
-    public List<ClientEntity> getIds(int limit, int offset){
-        Query<ClientEntity> query = this.datastore.createQuery(ClientEntity.class);
 
-        query.field("birthday").exists();
+    public Query<ClientEntity> getQuery() {
+        return this.datastore.createQuery(ClientEntity.class);
+    }
+    public List<ClientEntity> getClients(Query<ClientEntity> query,int limit, int offset){
         return query.asList(new FindOptions().limit(limit).skip(offset));
-
     }
 
     private Query<ClientEntity> applyToQuery(Query<ClientEntity> query, String fieldName, Object fieldValue) {
@@ -106,18 +106,18 @@ public class MongoClientDAO implements ClientDAO {
         return query;
     }
 
-    private UpdateOperations<ClientEntity> applyToUpdateQuery(UpdateOperations<ClientEntity> update, String fieldName, Object fieldValue){
-        if(fieldValue!= null){
-            return update.set(fieldName,fieldValue);
+    private UpdateOperations<ClientEntity> applyToUpdateQuery(UpdateOperations<ClientEntity> update, String fieldName, Object fieldValue) {
+        if (fieldValue != null) {
+            return update.set(fieldName, fieldValue);
         }
         return update;
     }
 
-    private Sort setSortingParameter(String key, String value){
-        if(value.equals("asc")){
+    private Sort setSortingParameter(String key, String value) {
+        if (value.equals("asc")) {
             return Sort.ascending(key);
         }
-        if(value.equals("desc")){
+        if (value.equals("desc")) {
             return Sort.descending(key);
         }
         // never happens
